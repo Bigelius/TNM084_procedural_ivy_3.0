@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
+    <script src="scene.js"></script>
+    <script src="L_system.js"></script>
+    <script>    
+        //L-systemet. (Stödjer [A - G])
+        raw_sentence = "A[B[C[D[E[F]]DD[E]]CC[D]]BB[C]]AA[BBB]";
+    
+        var sentence = raw_sentence.split('');
+      
+          
+      //RITAR LÅDA
+        /*var gHouse = new THREE.BoxGeometry(2,2,2);
+        var mHouse = new THREE.MeshLambertMaterial({color: 0xff0066, transparent: true, opacity: 1, visible: true});
+        var houseMesh = new THREE.Mesh(gHouse, mHouse);
+        houseMesh.position.set(-5, 0, 0);
+        scene.add(houseMesh);*/
+           
+    </script>
+    
+    <script src="drawTree.js"></script>
+    <script src="drawMatrix.js"></script>
+    
+    <div>
+        <script src="L_system.js"></script>
+        <p id = "grammar"> <script> document.getElementById("grammar").innerHTML = raw_sentence.toUpperCase(); </script> </p>
+    </div>
+</body>
+</html>
