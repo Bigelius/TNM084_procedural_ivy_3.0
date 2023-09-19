@@ -1,3 +1,13 @@
+/********************************************************************************
+L-SYSTEMET
+*********************************************************************************/
+//Supportar [A - G]
+//RING-string
+var axiom = "A[B[C[D[E[A[B[C[D[E]]CC]]]]]]]A";
+//var axiom = "A[A[A[A]]BC]BC[ABC]DEFG";
+export const sentence = axiom.split('');
+
+//INTE KLAR ÄN
 // Alphabet (V) : A, B, [, ], +, - 
 // Axiom (omga) aka initial state : AB
 // Rules (P) : defines how you replace the symbels   
@@ -50,5 +60,5 @@ console.log("axiom : " + axiom);
 var iteration = 3;
 var raw_sentence = Lsystem("AB", iteration, 0);
 console.log("--------- RESULT! ---------");            
-console.log("Sentance : " + sentance);
+console.log("Sentance : " + sentence);
 console.log("Number of itrations : " + iteration);

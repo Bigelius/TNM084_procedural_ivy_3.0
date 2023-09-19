@@ -1,48 +1,89 @@
-/*
-    Segment values. Should be pickable with sliders
-*/ 
+/************************************
+    BLANDADE STANDARD-GREJER
+*************************************/
+//Importera L-sträng
+import {sentence} from "./lsystem.js";
+import {getColor} from "./rules.js";
+console.log(sentence);
+
+
+var scene = new THREE.Scene();
+//Create a perspective camera, most similar to the eye (FOV, aspect ratio based on browser size, near and far plane)
+var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+
+//Set the camera position on the z-axis, might be the reason you sometimes not see an object 
+camera.position.z = 5; 
+camera.position.x = 0;
+//How close the camera is to the object  
+camera.position.y = 2;
+
+//Set up the renderer, uses pespective renderer
+var renderer = new THREE.WebGLRenderer({antialias: true});
+renderer.setClearColor("#e5e5e5"); //the color of the background
+
+//Set the size of the renderer, based on window
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+//Create our canvas element with these render settings
+document.body.appendChild(renderer.domElement);
+
+//Make the size responsive
+window.addEventListener('resize', () =>{
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+//readjust the aspect ratio
+camera.aspect = window.innerWidth/window.innerHeight;
+
+//Update the camera everytime a change has been made
+camera.updateProjectionMatrix();
+})
+//To see the color of the object we need a light for it
+var light = new THREE.PointLight(0xFFFFFF, 1, 500);
+light.position.set(10,0,25); //(x,y,z)
+//(color, intensity, distance)
+
+//For everything we create, we need to add (and render the whole scene)
+scene.add(light);
+
+//Must the call the render function evert time an object is added
+//This function is so that the mesh (the object) wont scale with us when we change the size 
+//of the window. It wont stretch. Creates a loop that draw the scene everytime the
+//the screen is refreshed.
+
+
+/***    Några gamla vektoroperatorer (abs, '-') ***/   
+function subVec3(a, b) {
+ return new THREE.Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
+}
+
+function absVec3(a) {
+  var sum = (a.x*a.x) + (a.y*a.y) + (a.z*a.z);
+  var res = Math.sqrt(sum);
+  return res;
+}
+/************************************************
+*       Börjar skapa saker
+************************************************/
+
+//RITAR LÅDA
+{
+var gHouse = new THREE.BoxGeometry(2,2,2);
+var mHouse = new THREE.MeshLambertMaterial({color: 0xff0066, transparent: true, opacity: 1, visible: true});
+var houseMesh = new THREE.Mesh(gHouse, mHouse);
+houseMesh.position.set(-5, 0, 0);
+scene.add(houseMesh);
+}
+
+//SPECS FÖR CYLINDERN 
+{
+var sum = 0;
 var radiusBottom = 0.1;
 var radiusTop = 0.1;
 var segmentLength = 1;
-
-/*
-    Debugging color coding. Not related to grammar rules, although the 
-    structure is similar
-*/
-function getColor(char){
-    var material;
-    switch(char) {
-      case "A":
-            material = new THREE.MeshLambertMaterial({color: 0xff9999});  
-        break;
-            
-      case "B":
-            material = new THREE.MeshLambertMaterial({color: 0x99ff99});  
-        break;
-        
-      case "C":
-            material = new THREE.MeshLambertMaterial({color: 0x99ffff});  
-        break;
-       
-      case "D":
-            material = new THREE.MeshLambertMaterial({color: 0xcc99ff});  
-        break;
-      
-      case "E":
-            material = new THREE.MeshLambertMaterial({color: 0xff99e6});  
-        break;
-       
-      case "F":
-            material = new THREE.MeshLambertMaterial({color: 0xff9999});  
-        break;
-          
-      case "G":
-            material = new THREE.MeshLambertMaterial({color: 0xffff99});  
-        break;
-    }
-    return material;
+var prevBranchPos = new THREE.Vector3( 0, 0, 0 );
 }
-      
+
+
 function createTreeSegment(pos, rot, char, lenght){
 
    var g = new THREE.CylinderGeometry( radiusTop, radiusBottom, lenght, 12 );
@@ -137,4 +178,3 @@ function createTree(start_INDEX, end_INDEX, currentPosition, currentRotation, se
 createTree(0, sentence.length, new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 0), segmentLength);
 
 renderer.render(scene, camera); //renders the scene and the camera
-
