@@ -5,7 +5,7 @@ L-SYSTEMET
 //RING-string
 var axiom = "A[B[C[D[E[A[B[C[D[E]]CC]]]]]]]A";
 //var axiom = "A[A[A[A]]BC]BC[ABC]DEFG";
-export const sentence = axiom.split('');
+//export const sentence = axiom.split('');
 
 //INTE KLAR ÄN
 // Alphabet (V) : A, B, [, ], +, - 
@@ -54,6 +54,7 @@ function Lsystem(axiom, n, i) {
   return S;        
 }
 
+/*
 console.log("--------- START! ---------")
 var axiom = "AB"
 console.log("axiom : " + axiom);
@@ -62,3 +63,4 @@ var raw_sentence = Lsystem("AB", iteration, 0);
 console.log("--------- RESULT! ---------");            
 console.log("Sentance : " + sentence);
 console.log("Number of itrations : " + iteration);
+*/

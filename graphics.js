@@ -15,63 +15,65 @@ var scene, camera, renderer;
 // Function to clear the canvas and create a new one
 function clearCanvasDIV() {
     // Remove all objects from the scene
-   // Get the canvasContainer div
-   var div = document.getElementById('canvasContainer');
-    
-   // Remove all child nodes (including any existing canvas elements)
-   while (div.firstChild) {
-       div.removeChild(div.firstChild);
-   }
-}
+    // Get the canvasContainer div
+    var div = document.getElementById('canvasContainer');
 
+    // Remove all child nodes (including any existing canvas elements)
+    while (div.firstChild) {
+        div.removeChild(div.firstChild);
+    }
+}
 
 
 function create3DScene() {
     console.log("call create3DScene...")
 
     // Call this function to clear the canvas
-    
+
     scene = new THREE.Scene();
     //Create a perspective camera, most similar to the eye (FOV, aspect ratio based on browser size, near and far plane)
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     //Set the camera position on the z-axis, might be the reason you sometimes not see an object 
-    camera.position.z = 5; 
+    camera.position.z = 5;
     camera.position.x = 0;
     //How close the camera is to the object  
     camera.position.y = 2;
     //Set up the renderer, uses pespective renderer
-    renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setClearColor("#e5e5e5"); //the color of the background
 
     //Set the size of the renderer, based on window
     renderer.setSize(window.innerWidth, window.innerHeight);
-    
+
     //Create our canvas element with these render settings
     document.body.appendChild(renderer.domElement);
-    
+
     //Make the size responsive
-    window.addEventListener('resize', () =>{
+    window.addEventListener('resize', () => {
         renderer.setSize(window.innerWidth, window.innerHeight);
 
-    //readjust the aspect ratio
-    camera.aspect = window.innerWidth/window.innerHeight;
+        //readjust the aspect ratio
+        camera.aspect = window.innerWidth / window.innerHeight;
 
-    //Update the camera everytime a change has been made
-    camera.updateProjectionMatrix();
+        //Update the camera everytime a change has been made
+        camera.updateProjectionMatrix();
     })
 
-        //To see the color of the object we need a light for it
+    //To see the color of the object we need a light for it
     var light = new THREE.PointLight(0xFFFFFF, 1, 500);
-    light.position.set(10,0,25); //(x,y,z)
+    light.position.set(10, 0, 25); //(x,y,z)
     //(color, intensity, distance)
 
     //For everything we create, we need to add (and render the whole scene)
     scene.add(light);
 
-//Must the call the render function evert time an object is added
-//This function is so that the mesh (the object) wont scale with us when we change the size 
-//of the window. It wont stretch. Creates a loop that draw the scene everytime the
-//the screen is refreshed.
+    
+    //return scene;
+
+    //Must the call the render function evert time an object is added
+    //This function is so that the mesh (the object) wont scale with us when we change the size 
+    //of the window. It wont stretch. Creates a loop that draw the scene everytime the
+    //the screen is refreshed.
 }
 
 // Call the function to create the 3D scene
@@ -90,17 +92,33 @@ function getRandomColor() {
     return color;
 }
 
+
+function addToScene() { // lite smått och gott som kanske inte ska vara kvar....
+
+
+    //RITAR LÅDA
+    var gHouse = new THREE.BoxGeometry(2, 2, 2);
+    var mHouse = new THREE.MeshLambertMaterial({ color: 0xff0066, transparent: true, opacity: 1, visible: true });
+    var houseMesh = new THREE.Mesh(gHouse, mHouse);
+    houseMesh.position.set(-5, 0, 0);
+   // scene.add(houseMesh);
+
+    return houseMesh;
+
+
+}
+
 function create3DSceneTWEEK() {
     console.log("call create3DScene...")
 
     clearCanvasDIV();
-    
+
     // Get a reference to the canvasContainer div
     var canvasContainer = document.getElementById('canvasContainer');
-    
+
     // Create a scene
     var scene = new THREE.Scene();
-    
+
     // Create a perspective camera
     var camera = new THREE.PerspectiveCamera(75, canvasContainer.clientWidth / canvasContainer.clientHeight, 0.1, 1000);
     camera.position.z = 5;
@@ -113,7 +131,7 @@ function create3DSceneTWEEK() {
 
     renderer.setClearColor(getRandomColor());
     renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
-    
+
     // Append the renderer's DOM element (the canvas) to the canvasContainer div
     canvasContainer.appendChild(renderer.domElement);
 
@@ -131,17 +149,29 @@ function create3DSceneTWEEK() {
     // Add the light to the scene
     scene.add(light);
 
+    
+
+    var thing = addToScene();
+    var tree = createTree(0, sentence.length, new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 0), segmentLength);
+
+
+    scene.add(thing)
     // Render the scene
     renderer.render(scene, camera);
 }
 
-    
+
 
 function drawScene() {
     console.log("call drawScene...")
-    
+
 
     create3DSceneTWEEK()
+
+    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    console.log(scene)
+    
+   // addToScene()
 }
 
 /* ///////////////////////////////////////////////////////////////////////////////
@@ -149,40 +179,18 @@ console.log(sentence);
 
 
 
-
-
-/***    Några gamla vektoroperatorer (abs, '-') ***/   
-/* ///////////////////////////////////////////////////////////////////////////////
-function subVec3(a, b) {
- return new THREE.Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
-}
-
-function absVec3(a) {
-  var sum = (a.x*a.x) + (a.y*a.y) + (a.z*a.z);
-  var res = Math.sqrt(sum);
-  return res;
-}
 /************************************************
 *       Börjar skapa saker
 ************************************************/
 
-//RITAR LÅDA
-/* ///////////////////////////////////////////////////////////////////////////////
-{
-var gHouse = new THREE.BoxGeometry(2,2,2);
-var mHouse = new THREE.MeshLambertMaterial({color: 0xff0066, transparent: true, opacity: 1, visible: true});
-var houseMesh = new THREE.Mesh(gHouse, mHouse);
-houseMesh.position.set(-5, 0, 0);
-scene.add(houseMesh);
-}
 
 //SPECS FÖR CYLINDERN 
 {
-var sum = 0;
-var radiusBottom = 0.1;
-var radiusTop = 0.1;
-var segmentLength = 1;
-var prevBranchPos = new THREE.Vector3( 0, 0, 0 );
+    var sum = 0;
+    var radiusBottom = 0.1;
+    var radiusTop = 0.1;
+    var segmentLength = 1;
+    var prevBranchPos = new THREE.Vector3(0, 0, 0);
 }
 
 
@@ -277,9 +285,23 @@ function createTree(start_INDEX, end_INDEX, currentPosition, currentRotation, se
 // eller i mitten av bounding boxen (50, 0, 50);
 
 //(start index, last index, initial position, initial rotation, segment lenght)
-createTree(0, sentence.length, new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 0), segmentLength);
  
-renderer.render(scene, camera); //renders the scene and the camera
+//renderer.render(scene, camera); //renders the scene and the camera
 
 
-*/
+
+
+////////////////////////////////////////////////////////
+// GAMMLA FUNKTIONER, KANSKE TA BORT????
+
+/***    Några gamla vektoroperatorer (abs, '-') ***/
+
+function subVec3(a, b) {
+    return new THREE.Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
+}
+
+function absVec3(a) {
+    var sum = (a.x * a.x) + (a.y * a.y) + (a.z * a.z);
+    var res = Math.sqrt(sum);
+    return res;
+}
