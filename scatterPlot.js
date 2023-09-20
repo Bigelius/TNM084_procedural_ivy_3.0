@@ -2,7 +2,7 @@ console.log("read scatterPlot.js")
 //export function drawScatterPlot = drawScatterPlot(myData);
 
 
-import {coordinatesForScatter} from "./randomNumberGenerator.js";
+//import {coordinatesForScatter} from "./randomNumberGenerator.js";
 
 //console.log("coordinatesForScatter")
 //console.log(coordinatesForScatter)
@@ -64,5 +64,5 @@ function drawScatterPlot(myData) {
             .style("fill", "#69b3a2")
 }
 
-drawScatterPlot(coordinatesForScatter)
+//drawScatterPlot(coordinatesForScatter)
 

@@ -23,7 +23,7 @@ while (i < (2 * Math.PI)) {
     var a = M * Math.sin(i);
     var frac_a = Math.abs(a) - Math.floor(Math.abs(a));
 
-//    console.log("frac_a : " + frac_a)
+    //    console.log("frac_a : " + frac_a)
 
 
 
@@ -38,7 +38,9 @@ while (i < (2 * Math.PI)) {
 //console.log("allCoordinates")
 //console.log(allCoordinates)
 
-export const coordinatesForScatter = allCoordinates;
+//export const coordinatesForScatter = allCoordinates;
+drawScatterPlot(allCoordinates)
+
 //export { allCoordinates };
 
 
@@ -47,6 +49,7 @@ export const coordinatesForScatter = allCoordinates;
 //drawScatterPlot(allCoordinates)
 // 0 till 2pi
 
+//export function generateTruncatedRandom(startValue) {
 function generateTruncatedRandom(startValue) {
     console.log("call generateTruncatedRandom.")
 
@@ -54,15 +57,20 @@ function generateTruncatedRandom(startValue) {
     // const x = Math.random();  // Generate a random number between 0 and 1
 
     var x = startValue / 100;
-    const truncatedSine = amplitude * Math.sin(M * Math.PI * frequency * x + phase);
+    /*    const truncatedSine = amplitude * Math.sin(M * Math.PI * frequency * x + phase);
+    
+        // Map the result to the desired range, e.g., [0, 1]
+        const minRange = 0;
+        const maxRange = 1;
+        const result = minRange + (maxRange - minRange) * (truncatedSine + 1) / 2;*/
 
-    // Map the result to the desired range, e.g., [0, 1]
-    const minRange = 0;
-    const maxRange = 1;
-    const result = minRange + (maxRange - minRange) * (truncatedSine + 1) / 2;
+    var a = M * Math.sin(x);
+    var frac_a = Math.abs(a) - Math.floor(Math.abs(a));
 
+    var result = frac_a
 
-//    console.log("startValue : " + startValue + ", result : " + result)
+    console.log("frac_a : " + frac_a)
+    //    console.log("startValue : " + startValue + ", result : " + result)
 
     return result;
 
@@ -74,6 +82,8 @@ function generateTruncatedRandom(startValue) {
 
 
 };
+
+//export function genTruncRand = generateTruncatedRandom();
 
 //generateTruncatedRandom(sliderValue)
 
