@@ -7,9 +7,11 @@ console.log("read scatterPlot.js")
 //console.log("coordinatesForScatter")
 //console.log(coordinatesForScatter)
 
-function drawScatterPlot(myData) {
+function drawScatterPlot(myData, randPoint) {
 
     console.log("call scatterPlot")
+
+    d3.select('#my_dataviz').selectAll("svg").remove();
 
     var data = myData
 
@@ -27,41 +29,54 @@ function drawScatterPlot(myData) {
         .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
 
-    
+
     //console.log("data")
-   // console.log(data)
+    // console.log(data)
 
-        // Add X axis
-        var x = d3.scaleLinear()
-            .domain([0, 2*Math.PI])
-            .range([0, width]);
-        svg.append("g")
-            .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x));
+    // Add X axis
+    var x = d3.scaleLinear()
+        .domain([0, 2 * Math.PI])
+        .range([0, width]);
+    svg.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
 
-    
-        // Add Y axis
-        var y = d3.scaleLinear()
-            .domain([0, 1])
-            .range([height, 0]);
-        svg.append("g")
-            .call(d3.axisLeft(y));
 
-        // Add dots
-        svg.append('g')
-            .selectAll("dot")
-            .data(data)
-            .enter()
-            .append("circle")
-            .attr("cx", function (d) { return x(d.x); })
-            .attr("cy", function (d) { 
-                //console.log("d.y")
-                //console.log(d.y)
+    // Add Y axis
+    var y = d3.scaleLinear()
+        .domain([0, 1])
+        .range([height, 0]);
+    svg.append("g")
+        .call(d3.axisLeft(y));
 
-                return y(d.y); 
-            })
-            .attr("r", 3)
-            .style("fill", "#69b3a2")
+    // Add dots
+    svg.append('g')
+        .selectAll("dot")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("cx", function (d) { return x(d.x); })
+        .attr("cy", function (d) {
+            //console.log("d.y")
+            //console.log(d.y)
+
+            return y(d.y);
+        })
+        .attr("r", 3)
+        .style("fill", function (d) {
+            //console.log("d.y")
+            //console.log(d.y)
+          //  console.log("x(d.x) : " + x(d.x) + ", randPoint.x : " + randPoint.x)
+
+            if (x(d.x) == randPoint.x ) {
+                return "#eb3434";
+            } else {
+                return "#69b3a2";
+
+            }
+            
+
+        })
 }
 
 //drawScatterPlot(coordinatesForScatter)

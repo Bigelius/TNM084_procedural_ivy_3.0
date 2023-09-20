@@ -1,57 +1,158 @@
+console.log("read graphics.js")
+
 /************************************
     BLANDADE STANDARD-GREJER
 *************************************/
 //Importera L-sträng
-import {sentence} from "./lsystem.js";
-import {getColor} from "./rules.js";
-console.log(sentence);
+//import {sentence} from "./lsystem.js";
+//import {getColor} from "./rules.js";
+
+///////////////////////////////////////////////////////////////////////////////
+
+// Assuming you have a reference to your scene, camera, and renderer
+var scene, camera, renderer;
+
+// Function to clear the canvas and create a new one
+function clearCanvasDIV() {
+    // Remove all objects from the scene
+   // Get the canvasContainer div
+   var div = document.getElementById('canvasContainer');
+    
+   // Remove all child nodes (including any existing canvas elements)
+   while (div.firstChild) {
+       div.removeChild(div.firstChild);
+   }
+}
 
 
-var scene = new THREE.Scene();
-//Create a perspective camera, most similar to the eye (FOV, aspect ratio based on browser size, near and far plane)
-var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 
-//Set the camera position on the z-axis, might be the reason you sometimes not see an object 
-camera.position.z = 5; 
-camera.position.x = 0;
-//How close the camera is to the object  
-camera.position.y = 2;
+function create3DScene() {
+    console.log("call create3DScene...")
 
-//Set up the renderer, uses pespective renderer
-var renderer = new THREE.WebGLRenderer({antialias: true});
-renderer.setClearColor("#e5e5e5"); //the color of the background
+    // Call this function to clear the canvas
+    
+    scene = new THREE.Scene();
+    //Create a perspective camera, most similar to the eye (FOV, aspect ratio based on browser size, near and far plane)
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    //Set the camera position on the z-axis, might be the reason you sometimes not see an object 
+    camera.position.z = 5; 
+    camera.position.x = 0;
+    //How close the camera is to the object  
+    camera.position.y = 2;
+    //Set up the renderer, uses pespective renderer
+    renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer.setClearColor("#e5e5e5"); //the color of the background
 
-//Set the size of the renderer, based on window
-renderer.setSize(window.innerWidth, window.innerHeight);
+    //Set the size of the renderer, based on window
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    
+    //Create our canvas element with these render settings
+    document.body.appendChild(renderer.domElement);
+    
+    //Make the size responsive
+    window.addEventListener('resize', () =>{
+        renderer.setSize(window.innerWidth, window.innerHeight);
 
-//Create our canvas element with these render settings
-document.body.appendChild(renderer.domElement);
+    //readjust the aspect ratio
+    camera.aspect = window.innerWidth/window.innerHeight;
 
-//Make the size responsive
-window.addEventListener('resize', () =>{
-renderer.setSize(window.innerWidth, window.innerHeight);
+    //Update the camera everytime a change has been made
+    camera.updateProjectionMatrix();
+    })
 
-//readjust the aspect ratio
-camera.aspect = window.innerWidth/window.innerHeight;
+        //To see the color of the object we need a light for it
+    var light = new THREE.PointLight(0xFFFFFF, 1, 500);
+    light.position.set(10,0,25); //(x,y,z)
+    //(color, intensity, distance)
 
-//Update the camera everytime a change has been made
-camera.updateProjectionMatrix();
-})
-//To see the color of the object we need a light for it
-var light = new THREE.PointLight(0xFFFFFF, 1, 500);
-light.position.set(10,0,25); //(x,y,z)
-//(color, intensity, distance)
-
-//For everything we create, we need to add (and render the whole scene)
-scene.add(light);
+    //For everything we create, we need to add (and render the whole scene)
+    scene.add(light);
 
 //Must the call the render function evert time an object is added
 //This function is so that the mesh (the object) wont scale with us when we change the size 
 //of the window. It wont stretch. Creates a loop that draw the scene everytime the
 //the screen is refreshed.
+}
+
+// Call the function to create the 3D scene
+//create3DScene();
+
+// temp för att kolla färg
+function getRandomColor() {
+    // Generate random values for R, G, and B between 0 and 255
+    const r = Math.floor(Math.random() * 256);
+    const g = Math.floor(Math.random() * 256);
+    const b = Math.floor(Math.random() * 256);
+
+    // Create a CSS color string in the format "rgb(r, g, b)"
+    const color = `rgb(${r}, ${g}, ${b})`;
+
+    return color;
+}
+
+function create3DSceneTWEEK() {
+    console.log("call create3DScene...")
+
+    clearCanvasDIV();
+    
+    // Get a reference to the canvasContainer div
+    var canvasContainer = document.getElementById('canvasContainer');
+    
+    // Create a scene
+    var scene = new THREE.Scene();
+    
+    // Create a perspective camera
+    var camera = new THREE.PerspectiveCamera(75, canvasContainer.clientWidth / canvasContainer.clientHeight, 0.1, 1000);
+    camera.position.z = 5;
+    camera.position.x = 0;
+    camera.position.y = 2;
+
+    // Create a renderer
+    var renderer = new THREE.WebGLRenderer({ antialias: true });
+    //renderer.setClearColor("#e5e5e5");
+
+    renderer.setClearColor(getRandomColor());
+    renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
+    
+    // Append the renderer's DOM element (the canvas) to the canvasContainer div
+    canvasContainer.appendChild(renderer.domElement);
+
+    // Make the size responsive
+    window.addEventListener('resize', () => {
+        renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
+        camera.aspect = canvasContainer.clientWidth / canvasContainer.clientHeight;
+        camera.updateProjectionMatrix();
+    });
+
+    // Create a point light
+    var light = new THREE.PointLight(0xFFFFFF, 1, 500);
+    light.position.set(10, 0, 25);
+
+    // Add the light to the scene
+    scene.add(light);
+
+    // Render the scene
+    renderer.render(scene, camera);
+}
+
+    
+
+function drawScene() {
+    console.log("call drawScene...")
+    
+
+    create3DSceneTWEEK()
+}
+
+/* ///////////////////////////////////////////////////////////////////////////////
+console.log(sentence);
+
+
+
 
 
 /***    Några gamla vektoroperatorer (abs, '-') ***/   
+/* ///////////////////////////////////////////////////////////////////////////////
 function subVec3(a, b) {
  return new THREE.Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
 }
@@ -66,6 +167,7 @@ function absVec3(a) {
 ************************************************/
 
 //RITAR LÅDA
+/* ///////////////////////////////////////////////////////////////////////////////
 {
 var gHouse = new THREE.BoxGeometry(2,2,2);
 var mHouse = new THREE.MeshLambertMaterial({color: 0xff0066, transparent: true, opacity: 1, visible: true});
@@ -176,5 +278,8 @@ function createTree(start_INDEX, end_INDEX, currentPosition, currentRotation, se
 
 //(start index, last index, initial position, initial rotation, segment lenght)
 createTree(0, sentence.length, new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 0), segmentLength);
-
+ 
 renderer.render(scene, camera); //renders the scene and the camera
+
+
+*/

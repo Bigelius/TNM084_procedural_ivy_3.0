@@ -1,20 +1,19 @@
-console.log("read mainScrit.js")
+console.log("read mainScript.js")
 
-//import { theSeed } from './main.html';
-//import { generateTruncatedRandom } from './randomNumberGenerator.js';
-
-//console.log(theSeed)
 
 async function main(params) {
     console.log("Call main()")
-    console.log("main got input : " + params)
 
-
+    // Get random number from seed
     var randomNumber = generateTruncatedRandom(params)
 
-    console.log("INNE I MAIN!!!!!!")
-    console.log(randomNumber)
+    console.log("seed : " + params + ", gives randNumber : " + randomNumber)
+
+
+    // Draw secene with randomnumber
+    drawScene();
+
+
     
 }
 
-//main(theSeed)
