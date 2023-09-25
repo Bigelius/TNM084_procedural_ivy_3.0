@@ -38,6 +38,9 @@ function getRuleOf(symbol) {
 }
 
 function Lsystem(axiom, n, i) {
+
+  //console.log("call Lsystem()...")
+
     var S = "";
     var axiom_array = axiom.split('');
 
@@ -51,6 +54,7 @@ function Lsystem(axiom, n, i) {
             S = axiom;  
         }
     }
+
   return S;        
 }
 

@@ -10,29 +10,36 @@ var M = 10000000000;
 // All outcomes
 var allCoordinates = [];
 var i = 0;
-while (i < (2 * Math.PI)) {
-    var a = M * Math.sin(i);
-    var frac_a = Math.abs(a) - Math.floor(Math.abs(a));
-    var corr = { "y": frac_a, "x": i }
-    allCoordinates.push(corr)
 
-    i = i + 0.001;
+function AllOutcome(M) {
+    //console.log("call drawAllOutcome...")
+
+
+    while (i < (2 * Math.PI)) {
+        var a = M * Math.sin(i);
+        var frac_a = Math.abs(a) - Math.floor(Math.abs(a));
+        var corr = { "y": frac_a, "x": i }
+        allCoordinates.push(corr)
+
+        i = i + 0.001;
+    }
+    // draw all outcomes
 }
 
-// draw all outcomes
-drawScatterPlot(allCoordinates, { "y": 0, "x": 0 })
+function generateTruncatedRandom(M, x) {
+    // console.log("call generateTruncatedRandom...")
 
-
-function generateTruncatedRandom(startValue) {
-    console.log("call generateTruncatedRandom.")
-
-    var x = startValue / 100;
+    x = x / 100;
     var a = M * Math.sin(x);
     var frac_a = Math.abs(a) - Math.floor(Math.abs(a));
 
     // Draw scatter 
-    //allCoordinates.push({ "y": frac_a, "x": x })
     //drawScatterPlot(allCoordinates, { "y": frac_a, "x": x })
+
+    AllOutcome(M)
+    drawScatterPlot(allCoordinates, { "y": frac_a, "x": x })
+
+
 
     return frac_a;
 };
