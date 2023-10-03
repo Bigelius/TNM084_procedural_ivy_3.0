@@ -2,9 +2,14 @@
 L-SYSTEMET
 *********************************************************************************/
 //Supportar [A - G]
-//RING-string
-var axiom = "A[B[C[D[E[A[B[C[D[E]]CC]]]]]]]A";
-//var axiom = "A[A[A[A]]BC]BC[ABC]DEFG";
+//RING-TRÄD
+//var axiom = "A[A[B[B[C[C[D[D[E[E]]]]]]]]]BB"; //Vanlig ]";//
+var axiom = "AA[B[C]B]CC[A]C[A]B"; //Vanlig ]";//
+
+//var axiom = "A+[A+[B+[B+[C+[C+[D+[D+[E+[E]]]]]]]]]"; // + (Jättetrasig)
+//var axiom = "A-[B-[C-[D-[E-[A-[B-[C-[D-[E]]]]]]]]]"; // - (Jättetrasig)
+//BLAND-TRÄD
+//var axiom = "A[A[A[A]]BC]BC[ABC]DEFG"; //Vanlig
 export const sentence = axiom.split('');
 
 //INTE KLAR ÄN
