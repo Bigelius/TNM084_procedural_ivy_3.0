@@ -1,4 +1,4 @@
-var max_val = 10;   //Hur många voxlar i xyz
+/*var max_val = 10;   //Hur många voxlar i xyz
 
 //'False' = tom voxel
 function makeVoxelMatrix(){
@@ -70,5 +70,5 @@ function drawVoxelGrid(){
 
 drawVoxelGrid();
 renderer.render(scene, camera); //renders the scene and the camera
-
+*/
 
