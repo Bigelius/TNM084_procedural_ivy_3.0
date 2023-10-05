@@ -4,25 +4,26 @@
 //Importera L-sträng
 import {sentence} from "./lsystem.js";
 import {getColor} from "./rules.js";
+import {makeVoxelMatrix} from "./voxels.js";
 console.log(sentence);
 
-
+//var theMatrix = makeVoxelMatrix(100);
 var scene = new THREE.Scene();
 
 //Kameror
 {
     //Create a perspective camera, most similar to the eye (FOV, aspect ratio based on browser size, near and far plane)
-    //var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-    var camera = new THREE.OrthographicCamera(-5, 5, 5, -5, - 20, 1000);
-    camera.position.z = 1; 
-    camera.position.x = 0;
-    camera.position.y = 1;
+    var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    //var camera = new THREE.OrthographicCamera(-5, 5, 5, -5, - 20, 1000);
+    camera.position.z = 10; 
+    camera.position.x = 5;
+    camera.position.y = 8;
     camera.rotation.x = - Math.PI/6;
 
 }
     
 //Blandat
-{
+
     //Set up the renderer, uses pespective renderer
     var renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setClearColor("#e5e5e5"); //the color of the background
@@ -66,12 +67,16 @@ var scene = new THREE.Scene();
     function addVec3(a, b) {
      return new THREE.Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
     }
-
     function absVec3(a) {
       var sum = (a.x*a.x) + (a.y*a.y) + (a.z*a.z);
       var res = Math.sqrt(sum);
       return res;
     }
+    function pointDist(a, b){
+        var diff = subVec3(a,b);
+        return absVec3(diff);
+    }
+    
     /************************************************
     *       Börjar skapa saker
     ************************************************/
@@ -85,9 +90,9 @@ var scene = new THREE.Scene();
     scene.add(houseMesh);
     }*/
 
-}
 
-//SPECS FÖR CYLINDERN 
+
+//SPECS FÖR SEGMENT 
 {
 var sum = 0;
 var radiusBottom = 0.1;
@@ -211,7 +216,61 @@ function createTree(start_INDEX, end_INDEX, startPosition, c_rot, segLen){
 // eller i mitten av bounding boxen (50, 0, 50);
 
 //(start index, last index, initial position, initial rotation, segment lenght)
-createTree(0, sentence.length - 1, rootCoord
-           , new THREE.Vector3(0, 0, 0), segmentLength);
+//createTree(0, sentence.length - 1, rootCoord, new THREE.Vector3(0, 0, 0), segmentLength);
 
+
+/*Ritar voxlar*/
+var max_val = 30;   //Hur många voxlar i xyz
+var sphereCenter = new THREE.Vector3(4,4,4);
+var cLen = 1/4;
+//Ritar en voxel
+
+function drawVoxel(pos){
+
+    var g = new THREE.CubeGeometry(cLen, cLen, cLen );
+    var edges = new THREE.EdgesGeometry( g );
+
+    var line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
+    var m = new THREE.MeshLambertMaterial({color: 0xfc0324});
+    m.transparent = true;
+    
+    var newPos = new THREE.Vector3(pos.x * cLen, pos.y*cLen, pos.z*cLen);
+    if(pointDist(newPos, sphereCenter)<2.5){
+        m.opacity = 0.9;
+    }
+    else m.opacity = 0;
+    
+    var seg = new THREE.Mesh(g, m);
+
+    
+    seg.position.set(newPos.x, newPos.y, newPos.z);
+    line.position.set(newPos.x, newPos.y, newPos.z);
+    
+    
+    //scene.add(line);
+    scene.add(seg);
+}
+
+//Ritar alla voxlar
+export function drawVoxelGrid(){
+    var i = 0;
+    while(i < max_val){
+        var j = 0;                      //Inne i loop så den återställs varje iteration
+        while(j < max_val){
+            var k = 0;                  //Inne i loop så den återställs varje iteration
+            while(k < max_val){
+                var coord = new THREE.Vector3(i,j,k);
+                drawVoxel(coord);
+                ++k;
+            }
+            ++j;
+        }
+        ++i;
+    }
+}
+//var position = new THREE.Vector3(0,0,0);
+
+drawVoxelGrid();
+
+/*********************************/
 renderer.render(scene, camera); //renders the scene and the camera
