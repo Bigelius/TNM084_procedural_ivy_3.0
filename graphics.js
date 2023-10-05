@@ -14,43 +14,11 @@ var scene = new THREE.Scene();
     //Create a perspective camera, most similar to the eye (FOV, aspect ratio based on browser size, near and far plane)
     //var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
     var camera = new THREE.OrthographicCamera(-5, 5, 5, -5, - 20, 1000);
-    camera.position.z = 4; 
+    camera.position.z = 1; 
     camera.position.x = 0;
-    camera.position.y = 2;
-    //camera.rotation.x = - Math.PI/2;
+    camera.position.y = 1;
+    camera.rotation.x = - Math.PI/6;
 
-
-    //Tilt view
-    /*
-    camera.position.z = 10; 
-    camera.position.x = -2;
-    camera.position.y = 2;
-    camera.rotation.x = - Math.PI/6*/
-    //camera.rotation.y = - Math.PI/6
-
-
-    //Top view
-    /*
-    camera.position.z = 4; 
-    camera.position.x = 0;
-    camera.position.y = 8;
-    camera.rotation.x = - Math.PI/2;
-    */
-
-    //Front view
-
-    /*camera.position.z = 4; 
-    camera.position.x = 0;
-    camera.position.y = 0;
-    */
-
-    //(Y,Z) view
-    /*camera.position.z = 0; 
-    camera.position.x = 4;
-    camera.position.y = 2;
-
-    camera.rotation.y = Math.PI/2;
-    camera.rotation.x = Math.PI/2;*/
 }
     
 //Blandat
@@ -210,7 +178,7 @@ function createTree(start_INDEX, end_INDEX, startPosition, c_rot, segLen){
             
             /* Hypotes: Indexteringen i starts blir fel */
             
-            var b_rot = new THREE.Vector3(c_rot.x, c_rot.y, c_rot.z + Math.PI/5); //New initial rotation for branch
+            var b_rot = new THREE.Vector3(c_rot.x, c_rot.y + Math.PI/5, c_rot.z + Math.PI/5); //New initial rotation for branch
             
             createTree(current_index + 1, lbi, rootCoord, b_rot, segLen); //Make new branch with the new initial specs
             /* Over here the rootCoord have updated to top of the new tree above */

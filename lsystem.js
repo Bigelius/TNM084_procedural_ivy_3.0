@@ -4,7 +4,7 @@ L-SYSTEMET
 //Supportar [A - G]
 //RING-TRÄD
 //var axiom = "A[A[B[B[C[C[D[D[E[E]]]]]]]]]BB"; //Vanlig ]";//
-var axiom = "AA[B[C]B]CC[A]C[A]B"; //Vanlig ]";//
+var axiom = "A[B[C[D[E[F[G[A[B[A]B[A[B]A]]]]]]]C[D]C]]A[B]A"; //Vanlig ]";//
 
 //var axiom = "A+[A+[B+[B+[C+[C+[D+[D+[E+[E]]]]]]]]]"; // + (Jättetrasig)
 //var axiom = "A-[B-[C-[D-[E-[A-[B-[C-[D-[E]]]]]]]]]"; // - (Jättetrasig)
