@@ -1,4 +1,4 @@
-console.log("read graphics.js")
+console.log("read graphics_me.js")
 
 /************************************
     BLANDADE STANDARD-GREJER
@@ -10,11 +10,28 @@ console.log("read graphics.js")
 ///////////////////////////////////////////////////////////////////////////////
 //SPECS FÖR CYLINDERN 
 
+
+
+//Globala variabler
+var max_val = 10;   //Hur många voxlar i xyz
+//var theMatrix = makeVoxelMatrix(max_val); //Skapar voxel-matris med bools // fuckar view????
+//var scene = new THREE.Scene();
+
+
 var sum = 0;
 var radiusBottom = 0.1;
 var radiusTop = 0.1;
 var segmentLength = 1;
 var prevBranchPos = new THREE.Vector3(0, 0, 0);
+
+//SPECS FÖR SEGMENT 
+{
+    var sum = 0;
+    var radiusBottom = 0.1;
+    var radiusTop = 0.1;
+    var segmentLength = 1;
+    var coordIterator = new THREE.Vector3(0, 0, 0); //Global startposition. Updates with every segment to backtrack branches
+}
 
 var sentence = "";
 
@@ -44,10 +61,21 @@ function create3DScene() {
     //Create a perspective camera, most similar to the eye (FOV, aspect ratio based on browser size, near and far plane)
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     //Set the camera position on the z-axis, might be the reason you sometimes not see an object 
+
+
     camera.position.z = 5;
     camera.position.x = 0;
     //How close the camera is to the object  
     camera.position.y = 2;
+
+
+    // AMANDAS VINKLAR
+    //var camera = new THREE.OrthographicCamera(-5, 5, 5, -5, - 20, 1000);
+    //camera.position.z = 10;
+    //camera.position.x = 5;
+    //camera.position.y = 8;
+    //camera.rotation.x = - Math.PI / 6;
+
     //Set up the renderer, uses pespective renderer
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setClearColor("#e5e5e5"); //the color of the background
@@ -104,11 +132,48 @@ function getRandomColor() {
 
 
 
-function createTreeSegment(pos, rot, char, lenght) {
+function createTreeSegment_A(pos, rot, char, lenght) {
+    console.log("Call createTreeSegment_A()")
 
-    console.log("draing branch")
-    console.log(char)
+    var g = new THREE.CylinderGeometry(radiusTop, radiusBottom, lenght, 12);
+    var edges = new THREE.EdgesGeometry(g);
 
+    var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x000000 }));
+    var m = new THREE.MeshLambertMaterial({ color: 0xFFCC00 });
+    m = getColor(char.instruction);
+    var seg = new THREE.Mesh(g, m);
+
+    //seg.position.set(pos.x, pos.y, pos.z);
+    //seg.rotation.set(rot.x, rot.y, rot.z);
+    //line.position.set(pos.x, pos.y, pos.z);
+    //line.rotation.set(rot.x, rot.y, rot.z);
+
+    seg.position.set(pos.x, pos.y, pos.z);
+    seg.rotation.set(rot.x + char.rand, rot.y + char.rand, rot.z + char.rand);
+    line.position.set(pos.x, pos.y, pos.z);
+    line.rotation.set(rot.x + char.rand, rot.y + char.rand, rot.z + char.rand);
+
+    //Translate in new segment direction
+    seg.translateY(lenght / 2);
+    line.translateY(lenght / 2);
+
+    //scene.add(line);
+    //scene.add(seg);
+
+
+
+    //Returnerar nästa startposition (toppen på det här segmentet)
+    var temp = new THREE.LineSegments().copy(line);
+    temp.translateY(lenght / 2);
+    temp.getWorldPosition(coordIterator); //Sparar ny coordinat i rootCoord
+
+    return { "branchMesh": seg, "branchLine": line };
+}
+
+
+function createTreeSegment_J(pos, rot, char, lenght) {
+
+    console.log("drawing branch" + char)
 
     var g = new THREE.CylinderGeometry(radiusTop, radiusBottom, lenght, 12);
     var edges = new THREE.EdgesGeometry(g);
@@ -157,8 +222,53 @@ function getEndIndexOfBranch(start_INDEX) {
 
 var t = 0
 
+function createTree(sentence, start_INDEX, end_INDEX, startPosition, c_rot, segLen) {
+    // Iterator som ändras. 
+    console.log("Call createTree()")
+
+    var current_index = start_INDEX;
+    var oldPosition = startPosition; //Sparar pos-koordinaten som en temp
+    var allBranches = [];
+
+    //Loop over local main branch segments
+    //While we're not at the end of the local straight branch...
+    while (current_index <= end_INDEX) {
+        //Räknar...
+        if (sentence[current_index] == "[") {
+
+            var lastBranchIndex = getEndIndexOfBranch(current_index); //Last bracket of new branch!
+            var prevPosition = new THREE.Vector3(coordIterator.x, coordIterator.y, coordIterator.z);
+            var seg_rot = new THREE.Vector3(c_rot.x, c_rot.y + Math.PI / 5, c_rot.z + Math.PI / 5); //New initial rotation for branch
+
+            createTree(current_index + 1, lastBranchIndex, coordIterator, seg_rot, segLen); //Make new branch with the new initial specs
+            current_index = lastBranchIndex; //Go to next index after recursive branch
+        }
+        //Draw segment if not '[' or ']'. CoordIterator is the top of last segment
+        else if (sentence[current_index] != "]" && sentence[current_index] != null) {
+            //console.log("Vid index " + current_index + " gör segment av char : ")
+            //console.log(sentence[current_index])
+
+
+            var WhatIGet = createTreeSegment_A(coordIterator, c_rot, sentence[current_index], segmentLength);
+
+            //console.log("WhatIGet")
+            //console.log(WhatIGet)
+            // returna något här???
+            allBranches.push(WhatIGet.branchMesh)
+            allBranches.push(WhatIGet.branchLine)
+
+        }
+        console.log("branches so far " + allBranches.length)
+        ++current_index;
+    }
+    coordIterator = oldPosition; //Move iterator to the previous branch (where we left it to make new branch)
+
+    return allBranches;
+}
+
 //Drawing the tree
-function createTree(sentence, start_INDEX, end_INDEX, currentPosition, currentRotation, segmentLenght) {
+/*
+function createTree_OLD(sentence, start_INDEX, end_INDEX, currentPosition, currentRotation, segmentLenght) {
 
     console.log("call createTree...")
     console.log(sentence)
@@ -231,25 +341,82 @@ function createTree(sentence, start_INDEX, end_INDEX, currentPosition, currentRo
     return allBranches;
 
 }
+*/
 
 function addToScene() { // lite smått och gott som kanske inte ska vara kvar....
-
-
     //RITAR LÅDA
     var gHouse = new THREE.BoxGeometry(2, 2, 2);
     var mHouse = new THREE.MeshLambertMaterial({ color: 0xff0066, transparent: true, opacity: 1, visible: true });
     var houseMesh = new THREE.Mesh(gHouse, mHouse);
     houseMesh.position.set(5, 0, 0);
     // scene.add(houseMesh);
-
     return houseMesh;
-
-
 }
+
+
+function pointDist(a, b){
+    var diff = subVec3(a,b);
+    return absVec3(diff);
+}
+
+/*Ritar voxlar*/
+var sphereCenter = new THREE.Vector3(4,4,4);
+var cLen = 1/4;
+function drawVoxel(pos){
+
+    var g = new THREE.CubeGeometry(cLen, cLen, cLen );
+    var edges = new THREE.EdgesGeometry( g );
+
+    var line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
+    var m = new THREE.MeshLambertMaterial({color: 0xfc0324});
+    m.transparent = true;
+    
+    var newPos = new THREE.Vector3(pos.x * cLen, pos.y*cLen, pos.z*cLen);
+    /*
+    if(pointDist(newPos, sphereCenter)<2.5){ /// JOHANNNA!!!!! KOM IHÅG!!! GÖR DETTA TILL EN SLIDER VÄRDE ASSÅ 2.5
+        m.opacity = 0.9; 
+    }
+    else m.opacity = 1;
+    */
+   m.opacity = 0.5
+    
+    var seg = new THREE.Mesh(g, m);
+
+    
+    seg.position.set(newPos.x, newPos.y, newPos.z);
+    line.position.set(newPos.x, newPos.y, newPos.z);
+    
+    
+    //scene.add(line);
+    //scene.add(seg);
+    return seg;
+}
+
+//Ritar alla voxlar
+function drawVoxelGrid(){
+    var i = 0;
+    var allVoxel = [];
+    while(i < max_val){
+        var j = 0;                      //Inne i loop så den återställs varje iteration
+        while(j < max_val){
+            var k = 0;                  //Inne i loop så den återställs varje iteration
+            while(k < max_val){
+                var coord = new THREE.Vector3(i,j,k);
+                allVoxel.push(drawVoxel(coord));
+                ++k;
+            }
+            ++j;
+        }
+        ++i;
+    }
+    return allVoxel;
+}
+//var position = new THREE.Vector3(0,0,0);
+
 
 function create3DSceneTWEEK(sentence) {
     console.log("call create3DSceneTWEEK...")
-    console.log(sentence)
+   // console.log(sentence)
 
 
     clearCanvasDIV();
@@ -262,9 +429,14 @@ function create3DSceneTWEEK(sentence) {
 
     // Create a perspective camera
     var camera = new THREE.PerspectiveCamera(75, canvasContainer.clientWidth / canvasContainer.clientHeight, 0.1, 1000);
-    camera.position.z = 5;
+    //camera.position.z = 5;
+    //camera.position.x = 0;
+    //camera.position.y = 2;
+
+    camera.position.z = 7; 
     camera.position.x = 0;
-    camera.position.y = 2;
+    camera.position.y = 3;
+    camera.rotation.x = - Math.PI/6;
 
     // Create a renderer
     var renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -293,8 +465,18 @@ function create3DSceneTWEEK(sentence) {
     var thing = addToScene();
     var tree = createTree(sentence, 0, sentence.length, new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 0), segmentLength);
 
+
     tree.forEach(branch => {
         scene.add(branch)
+    });
+
+    var voxels = drawVoxelGrid();
+
+    console.log("voxels")
+    console.log(voxels)
+
+    voxels.forEach(box => {
+        scene.add(box)
     });
 
     scene.add(thing)
@@ -302,6 +484,7 @@ function create3DSceneTWEEK(sentence) {
     // Render the scene
     renderer.render(scene, camera);
 }
+
 
 
 
@@ -314,7 +497,9 @@ function drawScene(s) {
     //rita scenen
     create3DSceneTWEEK(s)
 
-    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+
+
+    //console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     //console.log(scene)
 
     // addToScene()
@@ -358,18 +543,3 @@ function absVec3(a) {
     return res;
 }
 
-
-
-// Gammal scene
-
-/***
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- */

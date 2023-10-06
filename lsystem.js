@@ -13,10 +13,9 @@ window.sen = axiom.split('');
 //var axiom = "A-[B-[C-[D-[E-[A-[B-[C-[D-[E]]]]]]]]]"; // - (Jättetrasig)
 //BLAND-TRÄD
 //var axiom = "A[A[A[A]]BC]BC[ABC]DEFG"; //Vanlig
-export const sentence = axiom.split('');
+//export const sentence = axiom.split('');
 
-window.moduleVar = "Hello from module.js";
-
+//window.moduleVar = "Hello from module.js";
 
 
 

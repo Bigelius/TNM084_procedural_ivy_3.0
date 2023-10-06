@@ -1,4 +1,5 @@
-export function getColor(char){
+function getColor(char){
+ // console.log("Call getColor() with char : " + char)
     var material;
     switch(char) {
       case "A":
