@@ -1,4 +1,4 @@
-function getColor(char){
+export function getColor(char){
     var material;
     switch(char) {
       case "A":

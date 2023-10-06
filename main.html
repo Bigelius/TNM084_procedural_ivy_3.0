@@ -14,11 +14,20 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
-    <!-- Load d3.js -->
-    <script src="https://d3js.org/d3.v4.js"></script>
+    <!-- Load d3.js 
+    <script src="https://d3js.org/d3.v4.js"></script> -->
 
 
-    <!-- Meny och parametrar temps -->
+    <!-- Laddar in olika moduler
+    <script src="./scatterPlot.js"></script>
+    <script src="./randomNumberGenerator.js"></script>  -->
+
+
+    <script type="module" src="./lsystem.js"></script>
+    <script type="module" src="./rules.js"></script>
+    <script type="module" src="./graphics.js"></script>
+
+    <!-- Meny och parametrar temps 
 
     <div style="height: auto; width: 400px; background-color: rgba(125, 125, 183, 0.471);">
 
@@ -43,10 +52,10 @@
         <p>Selected value: <span id="parameterSlider_2_value">50</span></p>
 
 
-        <h4>__________________________________________</h4>
+        <h4>__________________________________________</h4> -->
 
+        <!-- 
         <h4>Generate Ivy</h4>
-        <!-- Add a button with a function -->
         <button id="myButton" onclick="myFunction()">Generate tree</button>
 
 
@@ -54,23 +63,14 @@
 
     <div id="canvasContainer" style="width : 400px; height: 400px; background-color: blue;"> </div>
 
-    <!-- Create a div where the graph will take place -->
     <div id="my_dataviz"></div>
-    <!-- JavaScript function -->
 
 
-
-    <!-- Laddar in olika moduler -->
-    <script src="./scatterPlot.js"></script>
-    <script src="./randomNumberGenerator.js"></script>
+-->
 
 
-    <script src="./lsystem.js"></script>
-    <script src="./rules.js"></script>
-    <script src="./graphics_me.js"></script>
-
-
-    <script src="./mainScript.js"></script>
+    <!-- 
+    <script src="./mainScript.js"></script> 
 
 
     <script>
@@ -176,7 +176,7 @@
 
 
     </script>
-
+-->
 
 
 </body>

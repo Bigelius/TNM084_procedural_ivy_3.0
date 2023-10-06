@@ -4,7 +4,7 @@
 //Importera L-sträng
 import {sentence} from "./lsystem.js";
 import {getColor} from "./rules.js";
-import {makeVoxelMatrix} from "./voxels.js";
+//import {makeVoxelMatrix} from "./voxels.js";
 console.log(sentence);
 
 //var theMatrix = makeVoxelMatrix(100);
@@ -252,7 +252,7 @@ function drawVoxel(pos){
 }
 
 //Ritar alla voxlar
-export function drawVoxelGrid(){
+function drawVoxelGrid(){
     var i = 0;
     while(i < max_val){
         var j = 0;                      //Inne i loop så den återställs varje iteration

@@ -42,6 +42,7 @@ function getRuleOf(symbol) {
 
 }
 
+/*
 function Lsystem(axiom, n, i) {
 
   //console.log("call Lsystem()...")
@@ -62,7 +63,7 @@ function Lsystem(axiom, n, i) {
 
   return S;        
 }
-
+*/
 /*
 console.log("--------- START! ---------")
 var axiom = "AB"
