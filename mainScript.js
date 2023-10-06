@@ -1,7 +1,7 @@
 console.log("read mainScript.js")
 
 
-async function main(M) {
+async function main(M, parameter_1, parameter_2) {
     console.log("Call main()")
 
     console.log("--------- START! ---------")

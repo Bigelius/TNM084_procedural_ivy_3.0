@@ -37,7 +37,7 @@ function generateTruncatedRandom(M, x) {
     //drawScatterPlot(allCoordinates, { "y": frac_a, "x": x })
 
     AllOutcome(M)
-    drawScatterPlot(allCoordinates, { "y": frac_a, "x": x })
+   // drawScatterPlot(allCoordinates, { "y": frac_a, "x": x })
 
 
 

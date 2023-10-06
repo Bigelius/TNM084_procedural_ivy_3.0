@@ -17,7 +17,7 @@
     <!-- Load d3.js -->
     <script src="https://d3js.org/d3.v4.js"></script>
 
-    
+
     <!-- Meny och parametrar temps -->
 
     <div style="height: auto; width: 400px; background-color: rgba(125, 125, 183, 0.471);">
@@ -34,6 +34,13 @@
 
 
         <h4>Selected parameter value: </h4>
+        <label for="parameterSlider_1">Select a value:</label>
+        <input type="range" id="parameterSlider_1" name="parameterSlider_1" min="0" max="100" value="50">
+        <p>Selected value: <span id="parameterSlider_1_value">50</span></p>
+
+        <label for="parameterSlider_2">Select a value:</label>
+        <input type="range" id="parameterSlider_2" name="parameterSlider_2" min="0" max="100" value="50">
+        <p>Selected value: <span id="parameterSlider_2_value">50</span></p>
 
 
         <h4>__________________________________________</h4>
@@ -56,22 +63,30 @@
     <!-- Laddar in olika moduler -->
     <script src="./scatterPlot.js"></script>
     <script src="./randomNumberGenerator.js"></script>
-   
- 
+
+
     <script src="./lsystem.js"></script>
-    <script src="./rules.js"></script> 
+    <script src="./rules.js"></script>
     <script src="./graphics.js"></script>
-    
-    
+
+
     <script src="./mainScript.js"></script>
 
 
     <script>
 
+        var seed = 50;
+        var parameter_1 = 50;
+        var parameter_2 = 50;
+
+
         // FÖR BUTTON!
         function myFunction() {
             //alert("Button clicked!");
             console.log("generate tree!")
+            console.log("with parameters : " + seed + ", " + parameter_1 + " and " + parameter_2)
+            main(seed, parameter_1, parameter_2)
+
         }
 
 
@@ -86,18 +101,70 @@
         output.textContent = seedSlider.value;
 
         // Update the displayed value when the slider is moved
-        var seed = 0;
+
         //export let theSeed  = seed;
 
         seedSlider.addEventListener("input", function () {
             output.textContent = this.value;
             console.log("Got seed!!")
             seed = this.value;
-            main(seed)
+            // main(seed)
 
             //generateTruncatedRandom(seed)
 
         });
+
+
+        // Get references to the sliders by their IDs
+        const parameterSlider1 = document.getElementById('parameterSlider_1');
+        const parameterSlider2 = document.getElementById('parameterSlider_2');
+
+        const parameterOutput1 = document.getElementById("parameterSlider_1_value");
+        const parameterOutput2 = document.getElementById("parameterSlider_2_value");
+
+        // Display the initial value
+        parameterOutput1.textContent = parameterSlider1.value;
+        parameterOutput2.textContent = parameterSlider2.value;
+        // parameterOutput2.textContent = parameterSlider2.value;
+
+
+
+        // Define a common event listener function
+        function sliderChangeListener(event) {
+            // The 'event' object contains information about the slider that triggered the event
+            //output.textContent = this.value;
+
+
+            const slider = event.target;
+            var sliderId = slider.id;
+            console.log("slider")
+            console.log(slider)
+            const sliderValue = slider.value;
+
+            switch (slider.id) {
+                case "parameterSlider_1":
+                    console.log(`Slider ${slider.id} value: ${sliderValue}`);
+                    parameterOutput1.textContent = sliderValue
+
+                    parameter_1 = slider.value;
+                    break;
+                case "parameterSlider_2":
+                    console.log(`Slider ${slider.id} value: ${sliderValue}`);
+                    parameterOutput2.textContent = sliderValue
+
+                    parameter_2 = slider.value;
+                    break;
+                default:
+                    break;
+            }
+
+
+        }
+
+        // Attach the event listener to each slider
+        parameterSlider1.addEventListener('input', sliderChangeListener);
+        parameterSlider2.addEventListener('input', sliderChangeListener);
+
 
         //Temp...
         main(1000000)
@@ -110,7 +177,7 @@
 
     </script>
 
-    
+
 
 </body>
 
