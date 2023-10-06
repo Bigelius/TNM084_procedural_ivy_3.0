@@ -220,7 +220,7 @@ function createTree(start_INDEX, end_INDEX, startPosition, c_rot, segLen){
 
 
 /*Ritar voxlar*/
-var max_val = 30;   //Hur många voxlar i xyz
+var max_val = 10;   //Hur många voxlar i xyz
 var sphereCenter = new THREE.Vector3(4,4,4);
 var cLen = 1/4;
 //Ritar en voxel
@@ -235,10 +235,10 @@ function drawVoxel(pos){
     m.transparent = true;
     
     var newPos = new THREE.Vector3(pos.x * cLen, pos.y*cLen, pos.z*cLen);
-    if(pointDist(newPos, sphereCenter)<2.5){
-        m.opacity = 0.9;
+    if(pointDist(newPos, sphereCenter)<2.5){ /// JOHANNNA!!!!! KOM IHÅG!!! GÖR DETTA TILL EN SLIDER VÄRDE ASSÅ 2.5
+        m.opacity = 0.9; 
     }
-    else m.opacity = 0;
+    else m.opacity = 1;
     
     var seg = new THREE.Mesh(g, m);
 

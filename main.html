@@ -5,9 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Procedural Ivy</title>
-
-
-
 </head>
 
 <body>
@@ -18,16 +15,18 @@
     <script src="https://d3js.org/d3.v4.js"></script> -->
 
 
-    <!-- Laddar in olika moduler
+    <!-- Laddar in olika moduler -->
     <script src="./scatterPlot.js"></script>
-    <script src="./randomNumberGenerator.js"></script>  -->
+    <script src="./randomNumberGenerator.js"></script>  
 
 
     <script type="module" src="./lsystem.js"></script>
     <script type="module" src="./rules.js"></script>
     <script type="module" src="./graphics.js"></script>
+    <script src="./mainScript.js"></script> 
 
-    <!-- Meny och parametrar temps 
+
+    <!-- Meny och parametrar temps -->
 
     <div style="height: auto; width: 400px; background-color: rgba(125, 125, 183, 0.471);">
 
@@ -52,9 +51,9 @@
         <p>Selected value: <span id="parameterSlider_2_value">50</span></p>
 
 
-        <h4>__________________________________________</h4> -->
+        <h4>__________________________________________</h4> 
 
-        <!-- 
+        
         <h4>Generate Ivy</h4>
         <button id="myButton" onclick="myFunction()">Generate tree</button>
 
@@ -65,12 +64,7 @@
 
     <div id="my_dataviz"></div>
 
-
--->
-
-
-    <!-- 
-    <script src="./mainScript.js"></script> 
+    
 
 
     <script>
@@ -78,6 +72,7 @@
         var seed = 50;
         var parameter_1 = 50;
         var parameter_2 = 50;
+        main(seed, parameter_1, parameter_2)
 
 
         // FÖR BUTTON!
@@ -167,16 +162,15 @@
 
 
         //Temp...
-        main(1000000)
+        //main(1000000)
 
-
-
+        //export const sentence = axiom.split('');
         //export const theSeed = seed;
 
 
 
     </script>
--->
+
 
 
 </body>

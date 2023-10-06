@@ -4,13 +4,21 @@ L-SYSTEMET
 //Supportar [A - G]
 //RING-TRÄD
 //var axiom = "A[A[B[B[C[C[D[D[E[E]]]]]]]]]BB"; //Vanlig ]";//
-var axiom = "A[B[C[D[E[F[G[A[B[A]B[A[B]A]]]]]]]C[D]C]]A[B]A"; //Vanlig ]";//
+//var axiom = "A[B[C[D[E[F[G[A[B[A]B[A[B]A]]]]]]]C[D]C]]A[B]A"; //Vanlig ]";//
+var axiom = "A[B]C"; //Vanilla
+// för att få det till mainScript
+window.sen = axiom.split('');
 
 //var axiom = "A+[A+[B+[B+[C+[C+[D+[D+[E+[E]]]]]]]]]"; // + (Jättetrasig)
 //var axiom = "A-[B-[C-[D-[E-[A-[B-[C-[D-[E]]]]]]]]]"; // - (Jättetrasig)
 //BLAND-TRÄD
 //var axiom = "A[A[A[A]]BC]BC[ABC]DEFG"; //Vanlig
 export const sentence = axiom.split('');
+
+window.moduleVar = "Hello from module.js";
+
+
+
 
 //INTE KLAR ÄN
 // Alphabet (V) : A, B, [, ], +, - 
@@ -42,7 +50,7 @@ function getRuleOf(symbol) {
 
 }
 
-/*
+
 function Lsystem(axiom, n, i) {
 
   //console.log("call Lsystem()...")
@@ -63,7 +71,7 @@ function Lsystem(axiom, n, i) {
 
   return S;        
 }
-*/
+
 /*
 console.log("--------- START! ---------")
 var axiom = "AB"
