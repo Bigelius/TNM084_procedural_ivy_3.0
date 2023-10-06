@@ -189,7 +189,7 @@ function createTree(start_INDEX, end_INDEX, startPosition, c_rot, segLen){
 
 
 /*Ritar voxlar*/
-
+var max_val = 30;
 var sphereCenter = new THREE.Vector3(4,4,4);
 var cLen = 1/4;
 //Ritar en voxel
