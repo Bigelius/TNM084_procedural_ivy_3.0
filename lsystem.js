@@ -43,6 +43,9 @@ function getRuleOf(symbol) {
 }
 
 function Lsystem(axiom, n, i) {
+
+  //console.log("call Lsystem()...")
+
     var S = "";
     var axiom_array = axiom.split('');
 
@@ -56,9 +59,11 @@ function Lsystem(axiom, n, i) {
             S = axiom;  
         }
     }
+
   return S;        
 }
 
+/*
 console.log("--------- START! ---------")
 var axiom = "AB"
 console.log("axiom : " + axiom);
@@ -67,3 +72,4 @@ var raw_sentence = Lsystem("AB", iteration, 0);
 console.log("--------- RESULT! ---------");            
 console.log("Sentance : " + sentence);
 console.log("Number of itrations : " + iteration);
+*/
