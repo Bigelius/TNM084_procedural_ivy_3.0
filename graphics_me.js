@@ -13,7 +13,6 @@ console.log("read graphics_me.js")
 
 
 //Globala variabler
-var max_val = 10;   //Hur många voxlar i xyz
 //var theMatrix = makeVoxelMatrix(max_val); //Skapar voxel-matris med bools // fuckar view????
 //var scene = new THREE.Scene();
 
@@ -133,7 +132,7 @@ function getRandomColor() {
 
 
 function createTreeSegment_A(pos, rot, char, lenght) {
-    console.log("Call createTreeSegment_A()")
+    //console.log("Call createTreeSegment_A()")
 
     var g = new THREE.CylinderGeometry(radiusTop, radiusBottom, lenght, 12);
     var edges = new THREE.EdgesGeometry(g);
@@ -148,10 +147,12 @@ function createTreeSegment_A(pos, rot, char, lenght) {
     //line.position.set(pos.x, pos.y, pos.z);
     //line.rotation.set(rot.x, rot.y, rot.z);
 
+    
     seg.position.set(pos.x, pos.y, pos.z);
     seg.rotation.set(rot.x + char.rand, rot.y + char.rand, rot.z + char.rand);
     line.position.set(pos.x, pos.y, pos.z);
     line.rotation.set(rot.x + char.rand, rot.y + char.rand, rot.z + char.rand);
+
 
     //Translate in new segment direction
     seg.translateY(lenght / 2);
@@ -258,7 +259,7 @@ function createTree(sentence, start_INDEX, end_INDEX, startPosition, c_rot, segL
             allBranches.push(WhatIGet.branchLine)
 
         }
-        console.log("branches so far " + allBranches.length)
+        //console.log("branches so far " + allBranches.length)
         ++current_index;
     }
     coordIterator = oldPosition; //Move iterator to the previous branch (where we left it to make new branch)
@@ -361,7 +362,9 @@ function pointDist(a, b){
 
 /*Ritar voxlar*/
 var sphereCenter = new THREE.Vector3(4,4,4);
+var max_val = 30;   //Hur många voxlar i xyz
 var cLen = 1/4;
+var VARIABLE = 0;
 function drawVoxel(pos){
 
     var g = new THREE.CubeGeometry(cLen, cLen, cLen );
@@ -372,13 +375,10 @@ function drawVoxel(pos){
     m.transparent = true;
     
     var newPos = new THREE.Vector3(pos.x * cLen, pos.y*cLen, pos.z*cLen);
-    /*
-    if(pointDist(newPos, sphereCenter)<2.5){ /// JOHANNNA!!!!! KOM IHÅG!!! GÖR DETTA TILL EN SLIDER VÄRDE ASSÅ 2.5
+    if(pointDist(newPos, sphereCenter)<VARIABLE){ /// JOHANNNA!!!!! KOM IHÅG!!! GÖR DETTA TILL EN SLIDER VÄRDE ASSÅ 2.5
         m.opacity = 0.9; 
     }
-    else m.opacity = 1;
-    */
-   m.opacity = 0.5
+    else m.opacity = 0;
     
     var seg = new THREE.Mesh(g, m);
 
@@ -394,7 +394,7 @@ function drawVoxel(pos){
 
 //Ritar alla voxlar
 function drawVoxelGrid(){
-    var i = 0;
+    var i = 0; // pillat
     var allVoxel = [];
     while(i < max_val){
         var j = 0;                      //Inne i loop så den återställs varje iteration
@@ -433,9 +433,9 @@ function create3DSceneTWEEK(sentence) {
     //camera.position.x = 0;
     //camera.position.y = 2;
 
-    camera.position.z = 7; 
+    camera.position.z = 10; 
     camera.position.x = 0;
-    camera.position.y = 3;
+    camera.position.y = 8;
     camera.rotation.x = - Math.PI/6;
 
     // Create a renderer
@@ -472,14 +472,16 @@ function create3DSceneTWEEK(sentence) {
 
     var voxels = drawVoxelGrid();
 
-    console.log("voxels")
-    console.log(voxels)
+    //console.log("voxels")
+    //console.log(voxels)
 
     voxels.forEach(box => {
+        console.log("adding voxels...")
         scene.add(box)
     });
 
     scene.add(thing)
+    
 
     // Render the scene
     renderer.render(scene, camera);
@@ -488,11 +490,14 @@ function create3DSceneTWEEK(sentence) {
 
 
 
-function drawScene(s) {
+function drawScene(s, sphereThing) {
     console.log("call drawScene...")
     console.log("draw s : ")
     console.log(s)
 
+    console.log("sphereThing")
+    console.log(sphereThing)
+    VARIABLE = sphereThing;
     //sentence = s; // global sak
     //rita scenen
     create3DSceneTWEEK(s)

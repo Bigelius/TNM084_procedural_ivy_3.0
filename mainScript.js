@@ -3,7 +3,7 @@ console.log("read mainScript.js")
 console.log("goods from lsystem");
 console.log(window.moduleVar);
 
-async function main(M, parameter_1, parameter_2) {
+async function main(M, sphereThing, parameter_2) {
     console.log("Call main()")
 
     console.log("--------- START! ---------")
@@ -40,7 +40,7 @@ async function main(M, parameter_1, parameter_2) {
    
 
     // Draw secene with randomnumber
-    drawScene(rand_sentence);
+    drawScene(rand_sentence, sphereThing);
 
 
     console.log("--------- RESULT! ---------");
