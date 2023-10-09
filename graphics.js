@@ -1,12 +1,51 @@
 //Importerade funktioner
-import {sentence} from "./lsystem.js";
-import {getColor} from "./rules.js";
-import {makeVoxelMatrix} from "./voxels.js";
+//import {sentence} from "./lsystem.js";
+
+//import {getColor} from "./rules.js";
+function getColor(char){
+    // console.log("Call getColor() with char : " + char)
+       var material;
+       switch(char) {
+         case "A":
+               material = new THREE.MeshLambertMaterial({color: 0xff9999});  
+           break;
+   
+         case "B":
+               material = new THREE.MeshLambertMaterial({color: 0x99ff99});  
+           break;
+   
+         case "C":
+               material = new THREE.MeshLambertMaterial({color: 0x99ffff});  
+           break;
+   
+         case "D":
+               material = new THREE.MeshLambertMaterial({color: 0xcc99ff});  
+           break;
+   
+         case "E":
+               material = new THREE.MeshLambertMaterial({color: 0xff99e6});  
+           break;
+   
+         case "F":
+               material = new THREE.MeshLambertMaterial({color: 0xff9999});  
+           break;
+   
+         case "G":
+               material = new THREE.MeshLambertMaterial({color: 0xffff99});  
+           break;
+       }
+       return material;
+     }
+
+//import {makeVoxelMatrix} from "./voxels.js";
+
 //console.log(sentence);
+
+var sentence = "AB[B]A[B]";
 
 //Globala variabler
 var max_val = 30;   //Hur många voxlar i xyz
-var theMatrix = makeVoxelMatrix(max_val); //Skapar voxel-matris med bools
+//var theMatrix = makeVoxelMatrix(max_val); //Skapar voxel-matris med bools
 var scene = new THREE.Scene();
 
 //Kameror
@@ -185,7 +224,7 @@ function createTree(start_INDEX, end_INDEX, startPosition, c_rot, segLen){
 // eller i mitten av bounding boxen (50, 0, 50);
 
 //(start index, last index, initial position, initial rotation, segment lenght)
-//createTree(0, sentence.length - 1, rootCoord, new THREE.Vector3(0, 0, 0), segmentLength);
+createTree(0, sentence.length - 1, coordIterator, new THREE.Vector3(0, 0, 0), segmentLength);
 
 
 /*Ritar voxlar*/
@@ -238,7 +277,7 @@ function drawVoxelGrid(){
 }
 //var position = new THREE.Vector3(0,0,0);
 
-drawVoxelGrid();
+//drawVoxelGrid();
 
 /*********************************/
 renderer.render(scene, camera); //renders the scene and the camera

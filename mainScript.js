@@ -3,6 +3,7 @@ console.log("read mainScript.js")
 console.log("goods from lsystem");
 console.log(window.moduleVar);
 
+
 async function main(M, sphereThing, parameter_2) {
     console.log("Call main()")
 
@@ -15,6 +16,7 @@ async function main(M, sphereThing, parameter_2) {
 
     // Get sentance
 
+    
     var axiom = "A"
     console.log("axiom : " + axiom);
     var iteration = 2;
@@ -40,7 +42,9 @@ async function main(M, sphereThing, parameter_2) {
 
     var temp = [
         { "instruction": "A", "rand": 0 },
+        { "instruction": "[", "rand": 0 },
         { "instruction": "B", "rand": 60 },
+        { "instruction": "]", "rand": 0 },
         { "instruction": "A", "rand": 0 }
     ]
 
