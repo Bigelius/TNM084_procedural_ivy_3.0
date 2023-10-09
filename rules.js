@@ -1,3 +1,12 @@
+/**
+ *  VAD FINNS DET FÖR REGLER
+ * 
+ *  - Vad är jag för gren?
+ *  - Får jag växa här?
+ *    - Är det tillåtet att växa här?
+ *    - Kommer jag att växa in i något?
+ */
+
 function getColor(char){
  // console.log("Call getColor() with char : " + char)
     var material;

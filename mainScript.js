@@ -7,15 +7,15 @@ async function main(M, sphereThing, parameter_2) {
     console.log("Call main()")
 
     console.log("--------- START! ---------")
-    
+
     // Get sentance from global scope
     //console.log("sentance from lsystem");
     //var sentance = window.sen
     //console.log(sentance);
 
     // Get sentance
-    
-    var axiom = "AB"
+
+    var axiom = "A"
     console.log("axiom : " + axiom);
     var iteration = 2;
     var raw_sentence = Lsystem("AB", iteration, 0);
@@ -32,15 +32,22 @@ async function main(M, sphereThing, parameter_2) {
         rand_sentence.push(item)
     }
 
- 
+
 
     console.log("rand_sentence")
     console.log(rand_sentence)
 
-   
+
+    var temp = [
+        { "instruction": "A", "rand": 0 },
+        { "instruction": "B", "rand": 60 },
+        { "instruction": "A", "rand": 0 }
+    ]
 
     // Draw secene with randomnumber
-    drawScene(rand_sentence, sphereThing);
+    drawScene(temp, sphereThing);
+
+
 
 
     console.log("--------- RESULT! ---------");

@@ -137,15 +137,18 @@ function createTreeSegment_A(pos, rot, char, lenght) {
     var g = new THREE.CylinderGeometry(radiusTop, radiusBottom, lenght, 12);
     var edges = new THREE.EdgesGeometry(g);
 
-    var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x000000 }));
+    var lineMaterial = new THREE.LineBasicMaterial({ color: 0x000000 })
+    lineMaterial.opacity = 0.5;
+
+    var line = new THREE.LineSegments(edges, lineMaterial);
     var m = new THREE.MeshLambertMaterial({ color: 0xFFCC00 });
     m = getColor(char.instruction);
     var seg = new THREE.Mesh(g, m);
 
     //seg.position.set(pos.x, pos.y, pos.z);
-    //seg.rotation.set(rot.x, rot.y, rot.z);
+    //seg.rotation.set(rot.x + 0, rot.y , rot.z+ 30);
     //line.position.set(pos.x, pos.y, pos.z);
-    //line.rotation.set(rot.x, rot.y, rot.z);
+    //line.rotation.set(rot.x - 0, rot.y, rot.z +30);
 
     
     seg.position.set(pos.x, pos.y, pos.z);
@@ -346,10 +349,10 @@ function createTree_OLD(sentence, start_INDEX, end_INDEX, currentPosition, curre
 
 function addToScene() { // lite smått och gott som kanske inte ska vara kvar....
     //RITAR LÅDA
-    var gHouse = new THREE.BoxGeometry(2, 2, 2);
-    var mHouse = new THREE.MeshLambertMaterial({ color: 0xff0066, transparent: true, opacity: 1, visible: true });
+    var gHouse = new THREE.BoxGeometry(0.2, 10, 2);
+    var mHouse = new THREE.MeshLambertMaterial({ color: 0xffffff, transparent: true, opacity: 1, visible: true });
     var houseMesh = new THREE.Mesh(gHouse, mHouse);
-    houseMesh.position.set(5, 0, 0);
+    houseMesh.position.set(3, 0, 0);
     // scene.add(houseMesh);
     return houseMesh;
 }
@@ -463,6 +466,9 @@ function create3DSceneTWEEK(sentence) {
     scene.add(light);
 
     var thing = addToScene();
+    scene.add(thing)
+
+
     var tree = createTree(sentence, 0, sentence.length, new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 0), segmentLength);
 
 
@@ -470,6 +476,8 @@ function create3DSceneTWEEK(sentence) {
         scene.add(branch)
     });
 
+    
+    /*
     var voxels = drawVoxelGrid();
 
     //console.log("voxels")
@@ -479,9 +487,8 @@ function create3DSceneTWEEK(sentence) {
         console.log("adding voxels...")
         scene.add(box)
     });
-
-    scene.add(thing)
-    
+ 
+   */
 
     // Render the scene
     renderer.render(scene, camera);
