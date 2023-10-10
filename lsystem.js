@@ -13,10 +13,9 @@ window.sen = axiom.split('');
 //var axiom = "A-[B-[C-[D-[E-[A-[B-[C-[D-[E]]]]]]]]]"; // - (Jättetrasig)
 //BLAND-TRÄD
 //var axiom = "A[A[A[A]]BC]BC[ABC]DEFG"; //Vanlig
-export const sentence = axiom.split('');
+//export const sentence = axiom.split('');
 
-window.moduleVar = "Hello from module.js";
-
+//window.moduleVar = "Hello from module.js";
 
 
 
@@ -30,21 +29,33 @@ function getRuleOf(symbol) {
     The rules : 
         A -> BA
         B -> AA
-  */     
-  var res;
+  */
+  var res = "";
 
-  switch(symbol) {
+  //console.log("symbol : " + symbol)
+
+  switch (symbol) {
     case "A":
-      res = "BA";
+      res = "B[A]A";
       break;
 
     case "B":
-      res = "AA";
+      res = "A";
       break;
-          
-    //case "[" : break;
-    //case "]" : break;
+
+    case "C":
+      res = "C[BCA]";
+      break;
+
+    case "D":
+      res = "CBBA";
+      break;
+
+    case "[": break;
+    case "]": break;
   }
+
+  //console.log(res)
 
   return res;
 
@@ -55,21 +66,21 @@ function Lsystem(axiom, n, i) {
 
   //console.log("call Lsystem()...")
 
-    var S = "";
-    var axiom_array = axiom.split('');
+  var S = "";
+  var axiom_array = axiom.split('');
 
-    for(var j = 0; j < axiom.length; j++){
-        
-        if(i<n){ 
-            var nextAxiom = getRuleOf(axiom_array[j]);
-            S = S + Lsystem(nextAxiom, n, i+1); 
-        }
-        else {
-            S = axiom;  
-        }
+  for (var j = 0; j < axiom.length; j++) {
+
+    if (i < n) {
+      var nextAxiom = getRuleOf(axiom_array[j]);
+      S = S + Lsystem(nextAxiom, n, i + 1);
     }
+    else {
+      S = axiom;
+    }
+  }
 
-  return S;        
+  return S;
 }
 
 /*

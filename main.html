@@ -21,9 +21,14 @@
     <script src="./randomNumberGenerator.js"></script>  
 
 
-    <script type="module" src="./lsystem.js"></script>
-    <script type="module" src="./rules.js"></script>
-    <script type="module" src="./graphics.js"></script>
+    <script src="./lsystem.js"></script>
+    <script src="./rules.js"></script>
+    <!-- 
+    <script type="module" src="./graphics.js"></script> 
+    <script src="./graphics.js"></script> -->
+
+    <script src="./graphics_me.js"></script>
+
     <script src="./mainScript.js"></script> 
 
 
@@ -42,13 +47,14 @@
         <h4>__________________________________________</h4>
 
 
+        <!-- sphere thing! -->
         <h4>Selected parameter value: </h4>
         <label for="parameterSlider_1">Select a value:</label>
-        <input type="range" id="parameterSlider_1" name="parameterSlider_1" min="0" max="100" value="50">
-        <p>Selected value: <span id="parameterSlider_1_value">50</span></p>
+        <input type="range" id="parameterSlider_1" name="parameterSlider_1" min="0" max="2.5" value="5">
+        <p>SPEHRE THING: <span id="parameterSlider_1_value">50</span></p>
 
         <label for="parameterSlider_2">Select a value:</label>
-        <input type="range" id="parameterSlider_2" name="parameterSlider_2" min="0" max="100" value="50">
+        <input type="range" id="parameterSlider_2" name="parameterSlider_2" min="0" max="5" value="3.5">
         <p>Selected value: <span id="parameterSlider_2_value">50</span></p>
 
 
@@ -71,7 +77,7 @@
     <script>
 
         var seed = 50;
-        var parameter_1 = 50;
+        var parameter_1 = 0;
         var parameter_2 = 50;
         main(seed, parameter_1, parameter_2)
 
