@@ -174,7 +174,7 @@ function createTreeSegment_A(pos, rot, char, lenght) {
     return { "branchMesh": seg, "branchLine": line };
 }
 
-
+/*
 function createTreeSegment_J(pos, rot, char, lenght) {
 
     console.log("drawing branch" + char)
@@ -201,7 +201,7 @@ function createTreeSegment_J(pos, rot, char, lenght) {
     //scene.add(line);
     //scene.add(seg);
 }
-
+*/
 //Starts on the first bracket, ends on the last one. 
 function getEndIndexOfBranch(start_INDEX) {
     var counter = 0;
@@ -244,8 +244,13 @@ function createTree(sentence, start_INDEX, end_INDEX, startPosition, c_rot, segL
             var prevPosition = new THREE.Vector3(coordIterator.x, coordIterator.y, coordIterator.z);
             var seg_rot = new THREE.Vector3(c_rot.x, c_rot.y + Math.PI / 5, c_rot.z + Math.PI / 5); //New initial rotation for branch
 
-            createTree(current_index + 1, lastBranchIndex, coordIterator, seg_rot, segLen); //Make new branch with the new initial specs
+          //  current_index = current_index + 1; 
+            var subtree = createTree(current_index + 1, lastBranchIndex, coordIterator, seg_rot, segLen); //Make new branch with the new initial specs
             current_index = lastBranchIndex; //Go to next index after recursive branch
+
+            subtree.forEach(element => {
+                allBranches.push(element)
+            });
         }
         //Draw segment if not '[' or ']'. CoordIterator is the top of last segment
         else if (sentence[current_index] != "]" && sentence[current_index] != null) {
@@ -499,7 +504,7 @@ function create3DSceneTWEEK(sentence) {
 
 function drawScene(s, sphereThing) {
     console.log("call drawScene...")
-    console.log("draw s : ")
+    console.log("DRAWING S: ")
     console.log(s)
 
     console.log("sphereThing")

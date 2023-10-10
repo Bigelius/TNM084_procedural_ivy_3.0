@@ -44,8 +44,8 @@ async function main(M, sphereThing, parameter_2) {
         { "instruction": "A", "rand": 0 },
         { "instruction": "[", "rand": 0 },
         { "instruction": "B", "rand": 60 },
-        { "instruction": "]", "rand": 0 },
-        { "instruction": "A", "rand": 0 }
+        { "instruction": "]", "rand": 0 }
+       // { "instruction": "A", "rand": 0 }
     ]
 
     // Draw secene with randomnumber

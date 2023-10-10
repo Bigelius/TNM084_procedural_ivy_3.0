@@ -41,7 +41,7 @@ function getColor(char){
 
 //console.log(sentence);
 
-var sentence = "AB[B]A[B]";
+var sentence = "A[B]A";
 
 //Globala variabler
 var max_val = 30;   //Hur många voxlar i xyz
