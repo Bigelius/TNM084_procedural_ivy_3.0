@@ -27,10 +27,10 @@ function subVec3(a, b) {
 function addVec3(a, b) {
     return new THREE.Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
 }
-function pointDist(a, b){
+/*function pointDist(a, b){
     var diff = subVec3(a,b);
     return absVec3(diff);
-}
+}*/
 function absVec3(a) {
     var sum = (a.x * a.x) + (a.y * a.y) + (a.z * a.z);
     var res = Math.sqrt(sum);
@@ -61,7 +61,7 @@ var radIn = 3;
 var radOut = 7;
 //'False' = tom voxel
 //OBS: Index 0 - 19!!
-function makeVoxelMatrix(size){
+/*function makeVoxelMatrix(size){
     var i = 0;
     var j = 0;
     var k = 0;
@@ -86,9 +86,9 @@ function makeVoxelMatrix(size){
         ++k;
     }
     //Define initial empty voxels
-    for(var i = 0; i matrixSize; i++) {
-        for(var j = 0; j < matrixSize; j++) {
-            for(var k = 0; j < matrixSize; j++) {
+    for(var i = 0; i < size; i++) {
+        for(var j = 0; j < size; j++) {
+            for(var k = 0; j < size; j++) {
                 //Find center of voxel
                 var voxelMid = new THREE.Vector3(i + 0.5, j + 0.5, k + 0.5);
                 var dist = pointDist(voxelMid, sphereMid);
@@ -110,9 +110,9 @@ function makeVoxelMatrix(size){
     }
     
     return mat_xyz;
-}
+}*/
 
-var myMatrix = makeVoxelMatrix(matrixSize);
+//var myMatrix = makeVoxelMatrix(matrixSize);
 
 //Välj startposition från lista
 //Behöver parametervärde och längd på parametern
@@ -130,16 +130,16 @@ function isEmpty(index){
 }
 
 //True om ingen krock, uppdaterar matrisen 
-function noCollision(coord, rot){
+/*function noCollision(coord, rot){
 	var midCoord;
 	
     var tempSegment = new THREE.CylinderGeometry(radiusTop, radiusBottom, lenght, 12);
     //Oklart om detta behövs, men har inte testat än
-    /*var g = new THREE.CylinderGeometry(radiusTop, radiusBottom, lenght, 12);
-    var edges = new THREE.EdgesGeometry(g);
-    var m = new THREE.MeshLambertMaterial({ color: 0xFFCC00 });
-    var tempSegment = new THREE.Mesh(g, m);
-	*/
+    //var g = new THREE.CylinderGeometry(radiusTop, //radiusBottom, lenght, 12);
+    //var edges = new THREE.EdgesGeometry(g);
+    //var m = new THREE.MeshLambertMaterial({ color: 0xFFCC00 });
+    //var tempSegment = new THREE.Mesh(g, m);
+	
     seg.position.set(coord.x, coord.y, coord.z);
     seg.rotation.set(rot.x, rot.y, rot.z);
     
@@ -163,7 +163,7 @@ function noCollision(coord, rot){
 	} 
 	//OBS: Kan inte leta efter ny väg i noCollision eftersom väg-funktionen använder noCollision!
 	else return false
-}
+}*/
 
 
 /*****************************************
@@ -343,7 +343,7 @@ function deleteObjects() {
 
     tempVec = new THREE.Vector3(0, 0, 0)
     starts = [];
-    myMatrix = makeVoxelMatrix(matrixSize); //Nollställer matrisen
+    //myMatrix = makeVoxelMatrix(matrixSize); //Nollställer matrisen
     NEXT_COORD;
 
     sentence = [];
