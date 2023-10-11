@@ -1,4 +1,4 @@
-var sentence = [];
+let sentence = [];
 //SPECS FÖR CYLINDERN 
 {
     var sum = 0;
@@ -22,18 +22,22 @@ var objects = [];
 *               VEKTOROPERATORER
 ******************************************/
 function subVec3(a, b) {
-    return new THREE.Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
+    let temp = new THREE.Vector3(0,0,0);
+    temp.x = a.x - b.x;
+    temp.y = a.y - b.y;
+    temp.z = a.z - b.z;
+    return temp;
 }
 function addVec3(a, b) {
     return new THREE.Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
 }
-/*function pointDist(a, b){
-    var diff = subVec3(a,b);
+function pointDist(a, b){
+    let diff = subVec3(a,b);
     return absVec3(diff);
-}*/
+}
 function absVec3(a) {
-    var sum = (a.x * a.x) + (a.y * a.y) + (a.z * a.z);
-    var res = Math.sqrt(sum);
+    let sum = (a.x * a.x) + (a.y * a.y) + (a.z * a.z);
+    let res = Math.sqrt(sum);
     return res;
 }
 function coord2Index(coord){
@@ -56,17 +60,19 @@ function coord2Index(coord){
 
 var matrixSize = 20;
 var startVoxels = [];
-var sphereMid = THREE.Vector3(matrixSize/2, 0, matrixSize/2);
+var sphereMid = new THREE.Vector3(matrixSize/2, 0, matrixSize/2);
 var radIn = 3;
 var radOut = 7;
 //'False' = tom voxel
 //OBS: Index 0 - 19!!
-/*function makeVoxelMatrix(size){
-    var i = 0;
-    var j = 0;
-    var k = 0;
+var voxelMid = new THREE.Vector3(0,0,0);
+
+function makeVoxelMatrix(size){
+    let i = 0;
+    let j = 0;
+    let k = 0;
     
-    var mat_x = [Boolean];
+    let mat_x = [Boolean];
     while(i < size){
         mat_x.push(false);
         ++i;
@@ -85,34 +91,50 @@ var radOut = 7;
         mat_xyz.push(temp4);
         ++k;
     }
+    
+    i = 0;
+    j = 0;
+    k = 0;
     //Define initial empty voxels
-    for(var i = 0; i < size; i++) {
-        for(var j = 0; j < size; j++) {
-            for(var k = 0; j < size; j++) {
+    while(i < size) {
+        j = 0;
+
+        while(j < size) {
+            k = 0;
+            
+            while(k < size) {
                 //Find center of voxel
-                var voxelMid = new THREE.Vector3(i + 0.5, j + 0.5, k + 0.5);
+                voxelMid = new THREE.Vector3(i + 0.5, j + 0.5, k + 0.5);
+                
                 var dist = pointDist(voxelMid, sphereMid);
                 //Is the voxel on floor and outside sphere?
                 if(j == 2 && dist > radIn){
-                    myMatrix[i][j][k] = true;
+                    mat_xyz[i][j][k] = true;
                 }
                 //Is the voxel close to the sphere? (Inre radie < V < yttre radie)
-                else if(dist > radIn && dist > radIn){
-                    myMatrix[i][j][k] = true;
-
+                else if(dist > radIn && dist < radOut){
+                    //console.log("hej 1")
+                    mat_xyz[i][j][k] = true;
+                    
                     //Lägger till möjliga startpunkter i listan
-                    if(j == 2){
-                        startVoxels.add(new TREE.Vector3(i,j,k));
-                    }
+                    //Funkar inte helt än
+                    /*if(j == 2){
+                        console.log("hej 2")
+                        //startVoxels.push(new THREE.Vector3(i,j,k));
+                    }*/
                 }
+                k++;
             }
+            j++;
         }
+        i++;
     }
     
     return mat_xyz;
-}*/
+}
 
-//var myMatrix = makeVoxelMatrix(matrixSize);
+var myMatrix = makeVoxelMatrix(matrixSize);
+//console.log(startVoxels)
 
 //Välj startposition från lista
 //Behöver parametervärde och längd på parametern
