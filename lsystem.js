@@ -5,19 +5,14 @@ L-SYSTEMET
 //RING-TRÄD
 //var axiom = "A[A[B[B[C[C[D[D[E[E]]]]]]]]]BB"; //Vanlig ]";//
 //var axiom = "A[B[C[D[E[F[G[A[B[A]B[A[B]A]]]]]]]C[D]C]]A[B]A"; //Vanlig ]";//
-var axiom = "A[B]C"; //Vanilla
-// för att få det till mainScript
-window.sen = axiom.split('');
+
+//var axiom = "A[B]A"; //Vanlig ]";//
 
 //var axiom = "A+[A+[B+[B+[C+[C+[D+[D+[E+[E]]]]]]]]]"; // + (Jättetrasig)
 //var axiom = "A-[B-[C-[D-[E-[A-[B-[C-[D-[E]]]]]]]]]"; // - (Jättetrasig)
 //BLAND-TRÄD
 //var axiom = "A[A[A[A]]BC]BC[ABC]DEFG"; //Vanlig
 //export const sentence = axiom.split('');
-
-//window.moduleVar = "Hello from module.js";
-
-
 
 //INTE KLAR ÄN
 // Alphabet (V) : A, B, [, ], +, - 
@@ -29,58 +24,41 @@ function getRuleOf(symbol) {
     The rules : 
         A -> BA
         B -> AA
-  */
-  var res = "";
+  */     
+  var res;
 
-  //console.log("symbol : " + symbol)
-
-  switch (symbol) {
+  switch(symbol) {
     case "A":
-      res = "B[A]A";
+      res = "BA";
       break;
 
     case "B":
-      res = "A";
+      res = "AA";
       break;
-
-    case "C":
-      res = "C[BCA]";
-      break;
-
-    case "D":
-      res = "CBBA";
-      break;
-
-    case "[": break;
-    case "]": break;
+          
+    //case "[" : break;
+    //case "]" : break;
   }
-
-  //console.log(res)
 
   return res;
 
 }
 
-
 function Lsystem(axiom, n, i) {
+    var S = "";
+    var axiom_array = axiom.split('');
 
-  //console.log("call Lsystem()...")
-
-  var S = "";
-  var axiom_array = axiom.split('');
-
-  for (var j = 0; j < axiom.length; j++) {
-
-    if (i < n) {
-      var nextAxiom = getRuleOf(axiom_array[j]);
-      S = S + Lsystem(nextAxiom, n, i + 1);
+    for(var j = 0; j < axiom.length; j++){
+        
+        if(i<n){ 
+            var nextAxiom = getRuleOf(axiom_array[j]);
+            S = S + Lsystem(nextAxiom, n, i+1); 
+        }
+        else {
+            S = axiom;  
+        }
     }
-    else {
-      S = axiom;
-    }
-  }
-
-  return S;
+  return S;        
 }
 
 /*

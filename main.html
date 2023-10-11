@@ -4,35 +4,22 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Procedural Ivy</title>
-
 </head>
 
 <body>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
-    <!-- Load d3.js 
-    <script src="https://d3js.org/d3.v4.js"></script> -->
 
 
-    <!-- Laddar in olika moduler -->
-    <script src="./scatterPlot.js"></script>
-    <script src="./randomNumberGenerator.js"></script>  
+    <!-- Button to Generate Three.js Scene -->
+    <button id="generateButton" onclick="generateScene()">Generate Tree Scene</button>
 
+    <!-- Button to Delete Objects -->
+    <button id="deleteButton" onclick="deleteObjects()" disabled>Delete All Objects</button>
 
-    <script src="./lsystem.js"></script>
-    <script src="./rules.js"></script>
-    <!-- 
-    <script type="module" src="./graphics.js"></script> 
-    <script src="./graphics.js"></script> -->
+    <!-- Container for the Three.js Scene -->
+    <div id="sceneContainer" style="width: 300px; height: 300px"></div>
 
-    <script src="./graphics_me.js"></script>
-
-    <script src="./mainScript.js"></script> 
-
-
-    <!-- Meny och parametrar temps -->
 
     <div style="height: auto; width: 400px; background-color: rgba(125, 125, 183, 0.471);">
 
@@ -50,7 +37,7 @@
         <!-- sphere thing! -->
         <h4>Selected parameter value: </h4>
         <label for="parameterSlider_1">Select a value:</label>
-        <input type="range" id="parameterSlider_1" name="parameterSlider_1" min="0" max="2.5" value="5">
+        <input type="range" id="parameterSlider_1" name="parameterSlider_1" min="0" max="3" value="5">
         <p>SPEHRE THING: <span id="parameterSlider_1_value">50</span></p>
 
         <label for="parameterSlider_2">Select a value:</label>
@@ -58,38 +45,24 @@
         <p>Selected value: <span id="parameterSlider_2_value">50</span></p>
 
 
-        <h4>__________________________________________</h4> 
+        <h4>__________________________________________</h4>
 
-        
+
         <h4>Generate Ivy</h4>
         <button id="myButton" onclick="myFunction()">Generate tree</button>
 
 
     </div>
 
-    <div id="canvasContainer" style="width : 400px; height: 400px; background-color: blue;"> </div>
-
-    <div id="my_dataviz"></div>
-
-    
-
-
     <script>
 
+        
+
+
         var seed = 50;
-        var parameter_1 = 0;
-        var parameter_2 = 50;
-        main(seed, parameter_1, parameter_2)
-
-
-        // FÖR BUTTON!
-        function myFunction() {
-            //alert("Button clicked!");
-            console.log("generate tree!")
-            console.log("with parameters : " + seed + ", " + parameter_1 + " and " + parameter_2)
-            main(seed, parameter_1, parameter_2)
-
-        }
+        var parameter_1 = 3;
+        var parameter_2 = 4;
+       // main(seed, parameter_1, parameter_2)
 
 
         // FÖR SLIDER! 
@@ -168,16 +141,38 @@
         parameterSlider2.addEventListener('input', sliderChangeListener);
 
 
-        //Temp...
-        //main(1000000)
 
-        //export const sentence = axiom.split('');
-        //export const theSeed = seed;
+        // FÖR BUTTON!
+        function myFunction() {
+            //alert("Button clicked!");
+            console.log("generate tree!")
+            console.log("with parameters : " + seed + ", " + parameter_1 + " and " + parameter_2)
+           
+            deleteObjects()
+            generateScene(seed, parameter_1)
+            // main(seed, parameter_1, parameter_2)
+
+        }
 
 
 
     </script>
 
+
+    <!-- Laddar in olika moduler -->
+    <script src="./lsystem.js"></script>
+    <script src="./randomNumberGenerator.js"></script>
+    <script src="./rules.js"></script>
+    <script src="./graphics - fuckings commence.js"></script>
+
+    <!--<script type="module" src="./graphics.js"></script>
+    <script src="drawMatrix.js"></script> -->
+
+
+
+    <script>
+        generateScene()
+    </script>
 
 
 </body>
