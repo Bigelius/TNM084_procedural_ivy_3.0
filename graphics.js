@@ -59,13 +59,32 @@ function coord2Index(coord){
 ******************************************/
 
 var matrixSize = 20;
-var startVoxels = [];
-var sphereMid = new THREE.Vector3(matrixSize/2, 0, matrixSize/2);
-var radIn = 3;
-var radOut = 7;
+var possibleStartPositions = [];
+var sphereMid = new THREE.Vector3(matrixSize/2, 1, matrixSize/2);
+var radIn = 7;
+var radOut = 10;
 //'False' = tom voxel
 //OBS: Index 0 - 19!!
 var voxelMid = new THREE.Vector3(0,0,0);
+
+function drawVoxel(pos){
+
+    var g = new THREE.CubeGeometry(1, 1, 1);
+    var edges = new THREE.EdgesGeometry( g );
+
+    var line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
+    var m = new THREE.MeshLambertMaterial({color: 0xfc0324});
+    m.transparent = true;
+    m.opacity = 0.1;
+    var seg = new THREE.Mesh(g, m);
+
+    seg.position.set(pos.x, pos.y, pos.z);
+    
+    line.position.set(pos.x, pos.y, pos.z);
+    
+    scene.add(line);
+    scene.add(seg);
+}
 
 function makeVoxelMatrix(size){
     let i = 0;
@@ -105,23 +124,32 @@ function makeVoxelMatrix(size){
             while(k < size) {
                 //Find center of voxel
                 voxelMid = new THREE.Vector3(i + 0.5, j + 0.5, k + 0.5);
+                //Ritar hela voxel-fältet
+                //drawVoxel(voxelMid);
                 
                 var dist = pointDist(voxelMid, sphereMid);
                 //Is the voxel on floor and outside sphere?
-                if(j == 2 && dist > radIn){
+                if(j == 0 && dist > radIn){
                     mat_xyz[i][j][k] = true;
+                    //Ritar marken
+                    //drawVoxel(voxelMid);
                 }
                 //Is the voxel close to the sphere? (Inre radie < V < yttre radie)
                 else if(dist > radIn && dist < radOut){
-                    //console.log("hej 1")
                     mat_xyz[i][j][k] = true;
                     
+                    //Ritar lager runt sfär
+                    //drawVoxel(voxelMid);
+                
                     //Lägger till möjliga startpunkter i listan
-                    //Funkar inte helt än
-                    /*if(j == 2){
-                        console.log("hej 2")
-                        //startVoxels.push(new THREE.Vector3(i,j,k));
-                    }*/
+                    //Tror inte den funkar för j=0 i.o.m. mid-kompensation
+                    if(j == 1){
+                        possibleStartPositions.push(new THREE.Vector3(i.0.5,j,k+0.5));
+                        
+                        //Ritar startvoxlar
+                        //drawVoxel(voxelMid);
+                
+                    }
                 }
                 k++;
             }
@@ -133,24 +161,23 @@ function makeVoxelMatrix(size){
     return mat_xyz;
 }
 
-var myMatrix = makeVoxelMatrix(matrixSize);
-//console.log(startVoxels)
-
 //Välj startposition från lista
 //Behöver parametervärde och längd på parametern
+//EJ KONTROLLERAD
 function initialStartPosition(paramValue, paramLenght){
-	scale = paramLenght / startVoxels.lenght;  //Hur många param-värden per faktiskt startindex
+	scale = paramLenght / possibleStartPositions.lenght;  //Hur många param-värden per faktiskt startindex
 	normIndex = paramValue / scale;            //Hur många faktiska index skickar vi in från parameter
 	index = floor(normIndex);
-	return startVoxels[index];
+	return possibleStartPositions[index];
 }
-
+//EJ KONTROLLERAD
 function isEmpty(index){
 	if(matrix[index.i][index.j][index.k] = false) 
 		return false;
 	else return true;
 }
 
+//EJ KONTROLLERAD!
 //True om ingen krock, uppdaterar matrisen 
 /*function noCollision(coord, rot){
 	var midCoord;
@@ -187,6 +214,7 @@ function isEmpty(index){
 	else return false
 }*/
 
+//
 
 /*****************************************
 *               TRÄD
@@ -327,24 +355,27 @@ function init() {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, sceneContainer.clientWidth / sceneContainer.clientHeight, 0.1, 1000);
     //camera = new THREE.OrthographicCamera(-5, 5, 5, -5, - 20, 1000);
-    camera.position.z = 1;
-    camera.position.x = 0;
+
+    camera.position.x = 10;
     camera.position.y = 5;
-    camera.rotation.x = - Math.PI / 6;
+    camera.position.z = 35;
+    //camera.rotation.x = - Math.PI / 6;
     camera.aspect = sceneContainer.clientWidth / sceneContainer.clientHeight;
     // camera.updateProjectionMatrix();
+    
+    var myMatrix = makeVoxelMatrix(matrixSize);
+
 
 
     //To see the color of the object we need a light for it
     var light = new THREE.PointLight(0xFFFFFF, 1, 500);
 
-    light.position.set(10, 0, 5); //(x,y,z)
+    light.position.set(10, 21, 10); //(x,y,z)
     //(color, intensity, distance)
 
     //For everything we create, we need to add (and render the whole scene)
     scene.add(light);
 
-    camera.position.z = 5;
 }
 
 // Function to delete all objects in the scene
@@ -365,7 +396,7 @@ function deleteObjects() {
 
     tempVec = new THREE.Vector3(0, 0, 0)
     starts = [];
-    //myMatrix = makeVoxelMatrix(matrixSize); //Nollställer matrisen
+    myMatrix = makeVoxelMatrix(matrixSize); //Nollställer matrisen
     NEXT_COORD;
 
     sentence = [];
@@ -395,7 +426,8 @@ function generateScene(M, sphereRadie) {
         sentence.push(item)
     }
     
-    createTree(0, sentence.length - 1, rootCoord, new THREE.Vector3(0, 0, 0), segmentLength);
+    //createTree(0, sentence.length - 1, rootCoord, new THREE.Vector3(0, 0, 0), segmentLength);
+    
     
     renderer.render(scene, camera);
     document.getElementById("deleteButton").disabled = false;
