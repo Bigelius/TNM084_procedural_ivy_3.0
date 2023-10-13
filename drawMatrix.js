@@ -28,9 +28,9 @@ function makeVoxelMatrix(){
     //Returnerar en n*n*n-matris med bara massa 'false' i sig
     return mat_xyz;
 }
-
+*/
 //Ritar en voxel
-function drawVoxel(pos){
+/*function drawVoxel(pos){
 
     var g = new THREE.CubeGeometry(0.25, 0.25, 0.25 );
     var edges = new THREE.EdgesGeometry( g );
@@ -47,10 +47,10 @@ function drawVoxel(pos){
     
     scene.add(line);
     scene.add(seg);
-}
+}*/
 
 //Ritar alla voxlar
-function drawVoxelGrid(){
+/*function drawVoxelGrid(){
     var i = 0;
     while(i < max_val){
         var j = 0;                      //Inne i loop så den återställs varje iteration
@@ -65,10 +65,10 @@ function drawVoxelGrid(){
         }
         ++i;
     }
-}
+}*/
 //var position = new THREE.Vector3(0,0,0);
 
 drawVoxelGrid();
 renderer.render(scene, camera); //renders the scene and the camera
-*/
+
 
