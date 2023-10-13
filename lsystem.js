@@ -24,20 +24,24 @@ function getRuleOf(symbol) {
     The rules : 
         A -> BA
         B -> AA
-  */     
-  var res;
+  */
+  var res = "";
 
-  switch(symbol) {
+  switch (symbol) {
     case "A":
-      res = "BA";
+      res = "AB[AC]A";
       break;
 
     case "B":
-      res = "AA";
+      res = "C[D]ADA";
       break;
-          
-    //case "[" : break;
-    //case "]" : break;
+    
+      case "C":
+      res = "A[AD]A[B]A";
+      break;
+
+    case "[": break;
+    case "]": break;
   }
 
   return res;
@@ -45,20 +49,20 @@ function getRuleOf(symbol) {
 }
 
 function Lsystem(axiom, n, i) {
-    var S = "";
-    var axiom_array = axiom.split('');
+  var S = "";
+  var axiom_array = axiom.split('');
 
-    for(var j = 0; j < axiom.length; j++){
-        
-        if(i<n){ 
-            var nextAxiom = getRuleOf(axiom_array[j]);
-            S = S + Lsystem(nextAxiom, n, i+1); 
-        }
-        else {
-            S = axiom;  
-        }
+  for (var j = 0; j < axiom.length; j++) {
+
+    if (i < n) {
+      var nextAxiom = getRuleOf(axiom_array[j]);
+      S = S + Lsystem(nextAxiom, n, i + 1);
     }
-  return S;        
+    else {
+      S = axiom;
+    }
+  }
+  return S;
 }
 
 /*

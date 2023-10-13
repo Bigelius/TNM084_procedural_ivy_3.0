@@ -18,7 +18,7 @@
     <button id="deleteButton" onclick="deleteObjects()" disabled>Delete All Objects</button>
 
     <!-- Container for the Three.js Scene -->
-    <div id="sceneContainer" style="width: 300px; height: 300px"></div>
+    <div id="sceneContainer" style="width: 400px; height: 400px"></div>
 
 
     <div style="height: auto; width: 400px; background-color: rgba(125, 125, 183, 0.471);">
@@ -83,10 +83,6 @@
             output.textContent = this.value;
             console.log("Got seed!!")
             seed = this.value;
-            // main(seed)
-
-            //generateTruncatedRandom(seed)
-
         });
 
 
@@ -171,7 +167,7 @@
 
 
     <script>
-        generateScene()
+        generateScene(50,3)
     </script>
 
 
