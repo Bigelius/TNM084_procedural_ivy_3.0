@@ -300,19 +300,12 @@ function deleteObjects() {
 
 function setNewGirth(oldGirth, shrinkStep) {
 
-    console.log("SETTING NEW GRiPH!!!!!")
-    console.log("old girth : " + oldGirth)
-    console.log("rate girth : " + shrinkStep)
-
     var newGirth = oldGirth - (shrinkStep);
-    console.log("new girth : " + newGirth)
 
     if (newGirth > min_radiusTop) {
-        console.log("NOT too small")
         return newGirth;
     }
     else {
-        console.log("TOO small")
         return min_radiusTop;
     }
 
@@ -377,7 +370,6 @@ function createTreeSegment(pos, rot, char, lenght, bottomGirth) {
     objects.push(line)
 }
 
-
 //Starts on the first bracket, ends on the last one. Returns GLOBAL index
 function getEndIndexOfBranch(start_INDEX) {
     var counter = 0;
@@ -399,12 +391,8 @@ function getEndIndexOfBranch(start_INDEX) {
 }
 
 function getDepthOfSubtree(start_INDEX) {
-    console.log("(---------------------------)")
 
-    console.log("subtree start är index : " + start_INDEX)
     var end_INDEX = getEndIndexOfBranch(start_INDEX)
-
-    console.log("subtree slut är index : " + end_INDEX)
 
     var depth = 0;
 
@@ -412,18 +400,12 @@ function getDepthOfSubtree(start_INDEX) {
 
         if(sentence[i].instruction == "[") {
             var endOfSideBranch = getEndIndexOfBranch(i)
-            console.log("side branch  : [" + i + ", " + endOfSideBranch + "]")
-
             i = endOfSideBranch;
         }
         else {
             depth = depth + 1;
         }
     }
-
-    console.log("DEPTH : " + depth)
-
-    console.log("(---------------------------)")
 
 
     return depth;
@@ -450,25 +432,13 @@ function createTree(start_INDEX, end_INDEX, startPosition, c_rot, segLen, segGir
             var wtf = new THREE.Vector3(rootCoord.x, rootCoord.y, rootCoord.z);
             starts.push(wtf) //Latest saved initial position as a temp
 
-            console.log("NEW BRANCH and the current girth is : " + currentGirth )
-
-
 
             girthStarts.push(currentGirth)
-
-            //console.log("girthStarts")
-            //console.log(girthStarts)
             var subtreeDepth = getDepthOfSubtree(current_index)
-
             var shrinkRate = segGirth / (subtreeDepth + 1)
             girthShrinkRates.push(shrinkRate)
-            //console.log("girthShrinkRates")
-            //console.log(girthShrinkRates)
-
-            //var nextSegGirth = segGirth - shrinkRate;
             var nextSegGirth = setNewGirth(currentGirth, shrinkRate)
             currentGirth = nextSegGirth
-
 
             //var b_rot = new THREE.Vector3(c_rot.x, c_rot.y + Math.PI / 5, c_rot.z + Math.PI / 5); //New initial rotation for branch    
             var b_rot = new THREE.Vector3(c_rot.x, c_rot.y, c_rot.z); //New initial rotation for branch    
@@ -482,9 +452,6 @@ function createTree(start_INDEX, end_INDEX, startPosition, c_rot, segLen, segGir
  
 
         else if (sentence[current_index].instruction != "]" && sentence[current_index].instruction != "-" && sentence[current_index].instruction != "+") {
-            //At start, segments render in a single center point
-            //console.log("create branch med segGirth : " + segGirth)
-
             createTreeSegment(rootCoord, c_rot, sentence[current_index], segmentLength, currentGirth);
         }
 
