@@ -6,6 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
+<style>
+    .container {
+        display: flex;
+        align-items: center;
+    }
+
+    label {
+        width: 100px;
+        text-align: center;
+        margin-right: 10px;
+    }
+
+    input {
+        width: 200px;
+    }
+
+    p {
+        width: 100px;
+        text-align: center;
+        margin-right: 10px;
+    }
+</style>
+
 <body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
@@ -16,7 +39,7 @@
     <script src="./rules.js"></script>
     <script src="./graphics.js"></script>
 
-    
+
     <!-- Button to Generate Three.js Scene -->
     <button id="generateButton" onclick="generateScene()">Generate Tree Scene</button>
 
@@ -28,24 +51,38 @@
 
     <div style="height: auto; width: 400px; background-color: rgba(125, 125, 183, 0.471);">
 
-        <h4>Select seed</h4>
+        <h4>Select Parameter Values</h4>
 
-        <label for="randomSeedSlider">Select a value:</label>
-        <input type="range" id="randomSeedSlider" name="randomSeedSlider" min="0" max="100" value="50">
+        <div class="container">
+            <label for="randomSeedSlider">Select a seed:</label>
+            <input type="range" id="randomSeedSlider" name="randomSeedSlider" min="0" max="100" value="50">
+            <p> Res: <span id="sliderValue">50</span></p>
+        </div>
 
-        <p>Selected value: <span id="sliderValue">50</span></p>
+        <div class="container">
+            <label for="parameterSlider_1">Select a sphere radius:</label>
+            <input type="range" id="parameterSlider_1" name="parameterSlider_1" min="0" max="5" value="2">
+            <p> Res: <span id="parameterSlider_1_value">2</span></p>
+
+        </div>
+
+        <div class="container">
+            <label for="startPositionSlider">Select a start position:</label>
+            <input type="range" id="startPositionSlider" name="startPositionSlider" min="0" max="100" value="50">
+            <p> Res: <span id="startPositionSlider_value">50</span></p>
+
+        </div>
+
 
         <h4>__________________________________________</h4>
 
-        <!-- sphere thing! -->
-        <h4>Selected parameter value: </h4>
-        <label for="parameterSlider_1">Select a value:</label>
-        <input type="range" id="parameterSlider_1" name="parameterSlider_1" min="0" max="3" value="5">
-        <p>SPEHRE THING: <span id="parameterSlider_1_value">50</span></p>
 
-        <label for="parameterSlider_2">Select a value:</label>
-        <input type="range" id="parameterSlider_2" name="parameterSlider_2" min="0" max="5" value="3.5">
-        <p>Selected value: <span id="parameterSlider_2_value">50</span></p>
+        <div class="container">
+            <label for="parameterSlider_2">Select a value:</label>
+            <input type="range" id="parameterSlider_2" name="parameterSlider_2" min="0" max="5" value="3.5">
+            <p>Selected value: <span id="parameterSlider_2_value">50</span></p>
+
+        </div>
 
         <h4>__________________________________________</h4>
 
@@ -59,7 +96,9 @@
         var seed = 50;
         var parameter_1 = 3;
         var parameter_2 = 4;
-       // main(seed, parameter_1, parameter_2)
+        var startPosition = 50;
+        var startPosition_lenght = 50;
+        // main(seed, parameter_1, parameter_2)
 
         // FÖR SLIDER! 
         // Get the slider element
@@ -84,13 +123,16 @@
         // Get references to the sliders by their IDs
         const parameterSlider1 = document.getElementById('parameterSlider_1');
         const parameterSlider2 = document.getElementById('parameterSlider_2');
+        const startPositionSlider = document.getElementById('startPositionSlider');
 
         const parameterOutput1 = document.getElementById("parameterSlider_1_value");
         const parameterOutput2 = document.getElementById("parameterSlider_2_value");
+        const startPositionSliderOutput = document.getElementById("startPositionSlider_value");
 
         // Display the initial value
         parameterOutput1.textContent = parameterSlider1.value;
         parameterOutput2.textContent = parameterSlider2.value;
+        startPositionSliderOutput.textContent = startPositionSlider.value;
         // parameterOutput2.textContent = parameterSlider2.value;
 
         // Define a common event listener function
@@ -117,6 +159,13 @@
 
                     parameter_2 = slider.value;
                     break;
+                case "startPositionSlider":
+                    console.log(`Slider ${slider.id} value: ${sliderValue}`);
+                    startPositionSliderOutput.textContent = sliderValue
+
+                    startPosition = slider.value;
+                    startPosition_lenght = slider.max;
+                    break;
                 default:
                     break;
             }
@@ -125,23 +174,24 @@
         // Attach the event listener to each slider
         parameterSlider1.addEventListener('input', sliderChangeListener);
         parameterSlider2.addEventListener('input', sliderChangeListener);
+        startPositionSlider.addEventListener('input', sliderChangeListener);
 
-        
+
         // FÖR BUTTON!
         function myFunction() {
             //alert("Button clicked!");
             console.log("generate tree!")
-            console.log("with parameters : " + seed + ", " + parameter_1 + " and " + parameter_2)
-           
+            console.log("with parameters : " + seed + ", " + parameter_1 + ", " + parameter_2 + ", " + startPosition + " and " +startPosition_lenght) 
+
             deleteObjects()
-            generateScene(seed, parameter_1)
+            generateScene(seed, parameter_1, startPosition)
             // main(seed, parameter_1, parameter_2)
         }
     </script>
 
-    
+
     <script>
-        generateScene(50,3);
+        generateScene(50, 3);
     </script>
 
 </body>
