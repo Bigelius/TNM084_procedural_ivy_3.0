@@ -247,13 +247,13 @@ function init() {
     //camera.aspect = sceneContainer.clientWidth / sceneContainer.clientHeight;
     // camera.updateProjectionMatrix();
 
-    camera.position.x = 9;
-   // camera.position.y = 15;
-    camera.rotation.y = 0 * Math.PI / 2;
-    camera.position.y = 0.0;
+   // camera.position.x = 9;
+    camera.position.y = 15;
+   // camera.rotation.y = 0 * Math.PI / 2;
+    //camera.position.y = 0.0;
 
-    camera.position.z = 10;
-    camera.lookAt(0,0,0)
+    //camera.position.z = 10;
+    //camera.lookAt(0,0,0)
 
     //Skapar / ritar matrisen
     var myMatrix = makeVoxelMatrix(matrixSize);
@@ -496,10 +496,6 @@ function createTree(start_INDEX, end_INDEX, startPosition, c_rot, segLen, segGir
             rootCoord.z = stamCoord.z;
             starts.pop()
 
-            console.log("branch has ended")
-
-            console.log(girthStarts)
-
             var stamGirth = girthStarts[girthStarts.length - 1]
             currentGirth = stamGirth;
             girthStarts.pop()
@@ -527,14 +523,12 @@ function generateScene(M, sphereRadie) {
     init();
 
 
-    var axiom = "AC"
+    var axiom = "ABC"
     var iteration = 1;
     var raw_sentence = Lsystem(axiom, iteration, 0);
 
     // tempigt
     //raw_sentence = "[A[B[AA]BB]AAA]"
-    console.log("raw_sentence")
-    console.log(raw_sentence)
 
     raw_sentence = "[" + raw_sentence + "]";
 
@@ -551,28 +545,16 @@ function generateScene(M, sphereRadie) {
     }
 
 
-    var theAbsoluteEnd = getEndIndexOfBranch(0)
-    console.log("theAbsoluteEnd : " + theAbsoluteEnd)
     var subtreeDepth = getDepthOfSubtree(0)
-
-    var stemShrinkRate = (max_radiusBottom - min_radiusTop) / subtreeDepth
-    console.log("stemShrinkRate : " + stemShrinkRate )
-   // console.log("stemShrinkRate : " + stemShrinkRate + " ... " + (stemShrinkRate*subtreeDepth))
     girthShrinkRates.push((max_radiusBottom - min_radiusTop)/ subtreeDepth)
-    //console.log("girthShrinkRates")
-    //console.log(girthShrinkRates)
-
-    girthStarts.push(stemShrinkRate)
-
-    console.log("girthStarts")
-    console.log(girthStarts)
+    girthStarts.push(max_radiusBottom)
 
 
     sentence.shift();
     sentence.pop();
 
 
-    console.log("sending this")
+    console.log("Sending L-string")
     console.log(sentence)
 
 
@@ -596,60 +578,4 @@ const animate = () => {
     renderer.render(scene, camera);
   };
   
-   //animate();
-
-
-
-/*
-
-
-
-var scene = new THREE.Scene();
-
-//Kameror
-{
-    //Create a perspective camera, most similar to the eye (FOV, aspect ratio based on browser size, near and far plane)
-    //var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-    var camera = new THREE.OrthographicCamera(-5, 5, 5, -5, - 20, 1000);
-    camera.position.z = 1; 
-    camera.position.x = 0;
-    camera.position.y = 1;
-    camera.rotation.x = - Math.PI/6;
-
-}
-    
-//Blandat
-{
-    //Set up the renderer, uses pespective renderer
-    var renderer = new THREE.WebGLRenderer({antialias: true});
-    renderer.setClearColor("#e5e5e5"); //the color of the background
-
-    //Set the size of the renderer, based on window
-    renderer.setSize(window.innerWidth, window.innerHeight);
-
-    //Create our canvas element with these render settings
-    document.body.appendChild(renderer.domElement);
-
-    //Make the size responsive
-    window.addEventListener('resize', () =>{
-        renderer.setSize(window.innerWidth, window.innerHeight);
-
-        //readjust the aspect ratio
-        camera.aspect = window.innerWidth/window.innerHeight;
-
-        //Update the camera everytime a change has been made
-        camera.updateProjectionMatrix();
-    })
-
-    
-
-    //Must the call the render function evert time an object is added
-    //This function is so that the mesh (the object) wont scale with us when we change the size 
-    //of the window. It wont stretch. Creates a loop that draw the scene everytime the
-    //the screen is refreshed.
-
-
-
-}
-
-*/
+   animate();
