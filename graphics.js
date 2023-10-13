@@ -38,7 +38,185 @@ function absVec3(a) {
     var res = Math.sqrt(sum);
     return res;
 }
+function pointDist(a, b){
+    let diff = subVec3(a,b);
+    return absVec3(diff);
+}
+function coord2Index(coord){
+	if(coord.x > x_side - 1){
+		console.log("X COORDINATE OUT OF BOUNDS")
+	}
+	else if(coord.y > y_side - 1){
+		console.log("Y COORDINATE OUT OF BOUNDS")
+	}
+	else if(coord.z > z_side - 1){
+		console.log("Z COORDINATE OUT OF BOUNDS")
+	} 
+	else return new THREE.Vector3(floor(coord.x), floor(coord.y), floor(coord.z));
+}
+/*****************************************
+*    MATRISEN OCH INITIALA VOXLAR
+        + Sfärerna
+******************************************/
 
+var matrixSize = 20;
+var possibleStartPositions = [];
+var sphereMid = new THREE.Vector3(matrixSize/2, 1, matrixSize/2);
+var radIn = 7;
+var radOut = 10;
+//'False' = tom voxel
+//OBS: Index 0 - 19!!
+var voxelMid = new THREE.Vector3(0,0,0);
+
+function drawVoxel(pos){
+
+    var g = new THREE.CubeGeometry(1, 1, 1);
+    var edges = new THREE.EdgesGeometry( g );
+
+    var line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
+    var m = new THREE.MeshLambertMaterial({color: 0xfc0324});
+    m.transparent = true;
+    m.opacity = 0.1;
+    var seg = new THREE.Mesh(g, m);
+
+    seg.position.set(pos.x, pos.y, pos.z);
+    
+    line.position.set(pos.x, pos.y, pos.z);
+    
+    scene.add(line);
+    scene.add(seg);
+}
+
+function makeVoxelMatrix(size){
+    let i = 0;
+    let j = 0;
+    let k = 0;
+    
+    let mat_x = [Boolean];
+    while(i < size){
+        mat_x.push(false);
+        ++i;
+    }
+    var temp = mat_x;
+    var mat_xy = [temp];
+    while(j < size){
+        var temp2 = mat_x;
+        mat_xy.push(temp2);
+        ++j;
+    }
+    var temp3 = mat_xy;
+    var mat_xyz = [temp3];
+    while(k < size){
+        var temp4 = mat_xy;
+        mat_xyz.push(temp4);
+        ++k;
+    }
+    
+    i = 0;
+    j = 0;
+    k = 0;
+    //Define initial empty voxels
+    while(i < size) {
+        j = 0;
+
+        while(j < size) {
+            k = 0;
+            
+            while(k < size) {
+                //Find center of voxel
+                voxelMid = new THREE.Vector3(i + 0.5, j + 0.5, k + 0.5);
+                //Ritar hela voxel-fältet
+                //drawVoxel(voxelMid);
+                
+                var dist = pointDist(voxelMid, sphereMid);
+                //Is the voxel on floor and outside sphere?
+                if(j == 0 && dist > radIn){
+                    mat_xyz[i][j][k] = true;
+                    //Ritar marken
+                    //drawVoxel(voxelMid);
+                }
+                //Is the voxel close to the sphere? (Inre radie < V < yttre radie)
+                else if(dist > radIn && dist < radOut){
+                    mat_xyz[i][j][k] = true;
+                    
+                    //Ritar lager runt sfär
+                    //drawVoxel(voxelMid);
+                
+                    //Lägger till möjliga startpunkter i listan
+                    //Tror inte den funkar för j=0 i.o.m. mid-kompensation
+                    if(j == 1){
+                        possibleStartPositions.push(new THREE.Vector3(i + 0.5, j, k+0.5));
+                        //Ritar startvoxlar
+                        //drawVoxel(voxelMid);
+                    }
+                }
+                k++;
+            }
+            j++;
+        }
+        i++;
+    }
+    
+    return mat_xyz;
+}
+
+//Välj startposition från lista
+//Behöver parametervärde och längd på parametern
+//EJ KONTROLLERAD
+function initialStartPosition(paramValue, paramLenght){
+	scale = paramLenght / possibleStartPositions.lenght;  //Hur många param-värden per faktiskt startindex
+	normIndex = paramValue / scale;            //Hur många faktiska index skickar vi in från parameter
+	index = floor(normIndex);
+	return possibleStartPositions[index];
+}
+//EJ KONTROLLERAD
+function isEmpty(index){
+	if(matrix[index.i][index.j][index.k] = false) 
+		return false;
+	else return true;
+}
+
+//EJ KONTROLLERAD!
+//True om ingen krock, uppdaterar matrisen 
+/*function noCollision(coord, rot){
+	var midCoord;
+	
+    var tempSegment = new THREE.CylinderGeometry(radiusTop, radiusBottom, lenght, 12);
+    //Oklart om detta behövs, men har inte testat än
+    //var g = new THREE.CylinderGeometry(radiusTop, //radiusBottom, lenght, 12);
+    //var edges = new THREE.EdgesGeometry(g);
+    //var m = new THREE.MeshLambertMaterial({ color: 0xFFCC00 });
+    //var tempSegment = new THREE.Mesh(g, m);
+	
+    seg.position.set(coord.x, coord.y, coord.z);
+    seg.rotation.set(rot.x, rot.y, rot.z);
+    
+    tempSegment.TranslateY(segLen/2);
+	tempSegment.getWorldCoord(tempCoordinate);
+	
+    if(isEmpty(midCoord)){
+		var endCoord;
+		tempSegment.TranslateY(segLen/2);
+		tempSegment.getWorldCoord(endCoord);
+
+		if(isEmpty(endCoord)){
+			midCoord = coord2Index(midCoord);
+            endCoord = coord2Index(temoCoord2);
+            
+            matrix[midCoord.x][midCoord.y][midCoord.z] = false;
+			matrix[endCoord.x][endCoord.y][endCoord.z] = false;
+			return true
+		}
+		else return false
+	} 
+	//OBS: Kan inte leta efter ny väg i noCollision eftersom väg-funktionen använder noCollision!
+	else return false
+}*/
+
+
+/*****************************************
+*               INITIALISERING
+******************************************/
 
 // Initialize Three.js scene
 function init() {
@@ -77,6 +255,8 @@ function init() {
     camera.position.z = 10;
     camera.lookAt(0,0,0)
 
+    //Skapar / ritar matrisen
+    var myMatrix = makeVoxelMatrix(matrixSize);
 
     //To see the color of the object we need a light for it
     var light = new THREE.PointLight(0xFFFFFF, 1, 500);
@@ -88,6 +268,12 @@ function init() {
     scene.add(light);
 
 }
+
+/*****************************************
+*               TRÄD
+******************************************/
+
+
 
 // Function to delete all objects in the scene
 function deleteObjects() {
@@ -329,9 +515,12 @@ function createTree(start_INDEX, end_INDEX, startPosition, c_rot, segLen, segGir
 
 }
 
-
-
 // Function to generate the scene and enable the "Delete All Objects" button
+
+/*****************************************
+*               SCENEN
+******************************************/
+
 function generateScene(M, sphereRadie) {
     console.log("generateScene()");
 
@@ -393,8 +582,6 @@ function generateScene(M, sphereRadie) {
     renderer.render(scene, camera);
     document.getElementById("deleteButton").disabled = false;
 }
-
-
 
 const animate = () => {
     requestAnimationFrame(animate);

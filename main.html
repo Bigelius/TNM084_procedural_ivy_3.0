@@ -10,7 +10,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
 
+    <!-- Laddar in olika moduler -->
+    <script src="./lsystem.js"></script>
+    <script src="./randomNumberGenerator.js"></script>
+    <script src="./rules.js"></script>
+    <script src="./graphics.js"></script>
 
+    
     <!-- Button to Generate Three.js Scene -->
     <button id="generateButton" onclick="generateScene()">Generate Tree Scene</button>
 
@@ -20,9 +26,7 @@
     <!-- Container for the Three.js Scene -->
     <div id="sceneContainer" style="width: 400px; height: 400px"></div>
 
-
     <div style="height: auto; width: 400px; background-color: rgba(125, 125, 183, 0.471);">
-
 
         <h4>Select seed</h4>
 
@@ -32,7 +36,6 @@
         <p>Selected value: <span id="sliderValue">50</span></p>
 
         <h4>__________________________________________</h4>
-
 
         <!-- sphere thing! -->
         <h4>Selected parameter value: </h4>
@@ -44,26 +47,19 @@
         <input type="range" id="parameterSlider_2" name="parameterSlider_2" min="0" max="5" value="3.5">
         <p>Selected value: <span id="parameterSlider_2_value">50</span></p>
 
-
         <h4>__________________________________________</h4>
-
 
         <h4>Generate Ivy</h4>
         <button id="myButton" onclick="myFunction()">Generate tree</button>
-
 
     </div>
 
     <script>
 
-        
-
-
         var seed = 50;
         var parameter_1 = 3;
         var parameter_2 = 4;
        // main(seed, parameter_1, parameter_2)
-
 
         // FÖR SLIDER! 
         // Get the slider element
@@ -85,7 +81,6 @@
             seed = this.value;
         });
 
-
         // Get references to the sliders by their IDs
         const parameterSlider1 = document.getElementById('parameterSlider_1');
         const parameterSlider2 = document.getElementById('parameterSlider_2');
@@ -98,13 +93,10 @@
         parameterOutput2.textContent = parameterSlider2.value;
         // parameterOutput2.textContent = parameterSlider2.value;
 
-
-
         // Define a common event listener function
         function sliderChangeListener(event) {
             // The 'event' object contains information about the slider that triggered the event
             //output.textContent = this.value;
-
 
             const slider = event.target;
             var sliderId = slider.id;
@@ -128,16 +120,13 @@
                 default:
                     break;
             }
-
-
         }
 
         // Attach the event listener to each slider
         parameterSlider1.addEventListener('input', sliderChangeListener);
         parameterSlider2.addEventListener('input', sliderChangeListener);
 
-
-
+        
         // FÖR BUTTON!
         function myFunction() {
             //alert("Button clicked!");
@@ -147,29 +136,13 @@
             deleteObjects()
             generateScene(seed, parameter_1)
             // main(seed, parameter_1, parameter_2)
-
         }
-
-
-
     </script>
 
-
-    <!-- Laddar in olika moduler -->
-    <script src="./lsystem.js"></script>
-    <script src="./randomNumberGenerator.js"></script>
-    <script src="./rules.js"></script>
-    <script src="./graphics.js"></script>
-
-    <!--<script type="module" src="./graphics.js"></script>
-    <script src="drawMatrix.js"></script> -->
-
-
-
+    
     <script>
-        generateScene(50,3)
+        generateScene(50,3);
     </script>
-
 
 </body>
 
