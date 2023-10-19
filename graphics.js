@@ -59,11 +59,9 @@ function coord2Index(coord) {
         + Sfärerna
 ******************************************/
 
-var matrixSize = 20;
 var possibleStartPositions = [];
-var sphereMid = new THREE.Vector3(matrixSize / 2, 1, matrixSize / 2);
-var radIn = 7;
-var radOut = 10;
+
+
 //'False' = tom voxel
 //OBS: Index 0 - 19!!
 var voxelMid = new THREE.Vector3(0, 0, 0);
@@ -92,6 +90,10 @@ function makeVoxelMatrix(size) {
     let j = 0;
     let k = 0;
 
+    var sphereMid = new THREE.Vector3(size / 2, 1, size / 2);
+    var radIn = 7;
+    var radOut = 10;
+    
     let mat_x = [Boolean];
     while (i < size) {
         mat_x.push(false);
@@ -140,7 +142,7 @@ function makeVoxelMatrix(size) {
                     mat_xyz[i][j][k] = true;
 
                     //Ritar lager runt sfär
-                    drawVoxel(voxelMid);
+                    //drawVoxel(voxelMid);
 
                     //Lägger till möjliga startpunkter i listan
                     //Tror inte den funkar för j=0 i.o.m. mid-kompensation
@@ -160,15 +162,19 @@ function makeVoxelMatrix(size) {
     return mat_xyz;
 }
 
-//Välj startposition från lista
-//Behöver parametervärde och längd på parametern
-//EJ KONTROLLERAD
+//Return start position (vec3) from list
 function initialStartPosition(paramValue, paramLenght) {
-    scale = paramLenght / possibleStartPositions.lenght;  //Hur många param-värden per faktiskt startindex
-    normIndex = paramValue / scale;            //Hur många faktiska index skickar vi in från parameter
-    index = floor(normIndex);
-    return possibleStartPositions[index];
-}
+    let len = possibleStartPositions.length;
+    
+    console.log("list len");
+    console.log(len);
+    let scale = paramLenght / len;  //Hur många param-värden per faktiskt startindex
+    let normIndex = paramValue / scale;            //Hur många faktiska index skickar vi in från parameter
+    let index = Math.floor(normIndex);
+    return possibleStartPositions[index]; //This is a vec3
+    
+    }
+
 //EJ KONTROLLERAD
 function isEmpty(index) {
     if (matrix[index.i][index.j][index.k] = false)
@@ -240,24 +246,16 @@ function init() {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, sceneContainer.clientWidth / sceneContainer.clientHeight, 0.1, 1000);
     //camera = new THREE.OrthographicCamera(-5, 5, 5, -5, - 20, 1000);
-    // camera.position.z = 1;
-    //camera.position.x = 0;
-    //camera.position.y = 5;
+    camera.position.x = 10;
+    camera.position.y = 5;
+    camera.position.z = 30;
+
     //camera.rotation.x = - Math.PI / 6;
-    //camera.aspect = sceneContainer.clientWidth / sceneContainer.clientHeight;
-    // camera.updateProjectionMatrix();
-
-    // camera.position.x = 9;
-    camera.position.y = 15;
-    // camera.rotation.y = 0 * Math.PI / 2;
-    //camera.position.y = 0.0;
-
-    //camera.position.z = 10;
-    //camera.lookAt(0,0,0)
-
+    
     //Skapar / ritar matrisen
-    var myMatrix = makeVoxelMatrix(matrixSize);
-
+    possibleStartPositions = []; //Nollställer startpos innan man lägger till nya
+    myMatrix = makeVoxelMatrix(20);
+    
     //To see the color of the object we need a light for it
     var light = new THREE.PointLight(0xFFFFFF, 1, 500);
 
@@ -272,8 +270,6 @@ function init() {
 /*****************************************
 *               TRÄD
 ******************************************/
-
-
 
 // Function to delete all objects in the scene
 function deleteObjects() {
@@ -296,6 +292,7 @@ function deleteObjects() {
     NEXT_COORD;
 
     sentence = [];
+
 }
 
 function setNewGirth(oldGirth, shrinkStep) {
@@ -314,16 +311,8 @@ function setNewGirth(oldGirth, shrinkStep) {
 function createTreeSegment(pos, rot, char, lenght, bottomGirth) {
     //console.log("bottomGirth : " + bottomGirth)
 
-    var topGirth = setNewGirth(currentGirth, girthShrinkRates[girthShrinkRates.length - 1])
-    //var topGirth = currentGirth - girthShrinkRates[girthShrinkRates.length-1]
-    //console.log("topGirth : " + topGirth)
-
-    //console.log("calculating!!!!!!!!!!!!")
-    //console.log(bottomGirth + " - " + girthShrinkRates[girthShrinkRates.length-1] + " = " + topGirth)
-
+    var topGirth = setNewGirth(currentGirth, girthShrinkRates[girthShrinkRates.length - 1]);
     currentGirth = topGirth;
-
-
 
     //var g = new THREE.CylinderGeometry(radiusTop, radiusBottom, lenght, 12);
     var g = new THREE.CylinderGeometry(currentGirth, bottomGirth, lenght, 12);
@@ -346,6 +335,7 @@ function createTreeSegment(pos, rot, char, lenght, bottomGirth) {
     //line.position.set(pos.x, pos.y, pos.z);
     //line.rotation.set(rot.x , rot.y, rot.z);
 
+    //Ändra tillbaka det här och sätt rand i createTree
     seg.position.set(pos.x, pos.y, pos.z);
     seg.rotation.set(rot.x + rand_rot, rot.y + rand_rot, rot.z + 0);
     line.position.set(pos.x, pos.y, pos.z);
@@ -487,11 +477,9 @@ function generateScene(M, sphereRadie) {
 
     init();
 
-
     var axiom = "ABC"
     var iteration = 1;
     var raw_sentence = Lsystem(axiom, iteration, 0);
-
     // tempigt
     //raw_sentence = "[A[B[AA]BB]AAA]"
 
@@ -499,43 +487,34 @@ function generateScene(M, sphereRadie) {
 
     var split_sentence = raw_sentence.split('');
 
-    var rand_sentence = [];
     // Get random number from seed
     for (var i = 0; i < split_sentence.length; i++) {
         var randomNumber = generateTruncatedRandom(M, i)
         var item = { "instruction": split_sentence[i], "rand": randomNumber };
-        rand_sentence.push(item)
-
+        
         sentence.push(item)
     }
-
 
     var subtreeDepth = getDepthOfSubtree(0)
     girthShrinkRates.push((max_radiusBottom - min_radiusTop) / subtreeDepth)
     girthStarts.push(max_radiusBottom)
 
-
+    //Vad är det här?
     sentence.shift();
     sentence.pop();
-
-
-    console.log("Sending L-string")
-    console.log(sentence)
-
-
+    
+    rootCoord = initialStartPosition(startPosition, startPosition_lenght);
+    
+    console.log("rootCoord");
+    console.log(rootCoord);
+    drawVoxel(rootCoord); //Lägg till 
     createTree(0, sentence.length - 1, rootCoord, new THREE.Vector3(0, 0, 0), segmentLength, currentGirth);
 
-
-
     //drawVoxel(new THREE.Vector3(0, 0, 0))
-    makeVoxelMatrix(10)
-
+    
 
     renderer.render(scene, camera);
     document.getElementById("deleteButton").disabled = false;
-
-
-
 
 }
 

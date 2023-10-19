@@ -5,6 +5,7 @@ console.log("read randomNumberGenerator...")
 const amplitude = 1.0;   // Amplitude of the wave
 const frequency = 1.0;   // Frequency of the wave
 const phase = 0.0;       // Phase offset
+//Ska inte denna komma från parameter
 var M = 10000000000;
 
 // All outcomes

@@ -4,30 +4,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
 </head>
 
-<style>
-    .container {
-        display: flex;
-        align-items: center;
-    }
-
-    label {
-        width: 100px;
-        text-align: center;
-        margin-right: 10px;
-    }
-
-    input {
-        width: 200px;
-    }
-
-    p {
-        width: 100px;
-        text-align: center;
-        margin-right: 10px;
-    }
-</style>
 
 <body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.js"></script>
@@ -39,17 +18,16 @@
     <script src="./rules.js"></script>
     <script src="./graphics.js"></script>
 
+    <div>
+        <!-- Button to Generate Three.js Scene -->
+        <button id="generateButton" onclick="generateScene()">Generate Tree Scene</button>
 
-    <!-- Button to Generate Three.js Scene -->
-    <button id="generateButton" onclick="generateScene()">Generate Tree Scene</button>
+        <!-- Button to Delete Objects -->
+        <button id="deleteButton" onclick="deleteObjects()" disabled>Delete All Objects</button>
 
-    <!-- Button to Delete Objects -->
-    <button id="deleteButton" onclick="deleteObjects()" disabled>Delete All Objects</button>
-
-    <!-- Container for the Three.js Scene -->
-    <div id="sceneContainer" style="width: 400px; height: 400px"></div>
-
-    <div style="height: auto; width: 400px; background-color: rgba(125, 125, 183, 0.471);">
+    </div>
+    
+    <div id="menu">
 
         <h4>Select Parameter Values</h4>
 
@@ -91,6 +69,10 @@
 
     </div>
 
+    <!-- Container for the Three.js Scene -->
+    <div id="sceneContainer"></div>
+
+    
     <script>
 
         var seed = 50;

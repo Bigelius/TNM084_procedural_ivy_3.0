@@ -1,0 +1,46 @@
+/* Amandas CSS */
+#wrapper {
+    width:auto;
+    border: 5px solid black;
+    overflow: hidden;
+}
+
+#menu {
+    
+    width: 400px;
+    height:700px;
+    
+    float: left;
+    background-color: rgba(125, 125, 183, 0.471);
+    border: 3px solid red;
+}
+
+#sceneContainer {
+    border: 3px solid green;
+    width: 700px; 
+    height: 700px;
+    float: left;
+    overflow: hidden;
+}
+
+/* Johannas CSS */
+.container {
+        display: flex;
+        align-items: center;
+}
+
+#label {
+    width: 100px;
+    text-align: center;
+    margin-right: 10px;
+}
+
+#input {
+    width: 200px;
+}
+
+#p {
+    width: 100px;
+    text-align: center;
+    margin-right: 10px;
+}
