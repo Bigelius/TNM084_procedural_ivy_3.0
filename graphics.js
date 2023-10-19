@@ -550,6 +550,10 @@ const animate = () => {
     camera.lookAt(0, 10, 0);
 
     renderer.render(scene, camera);
+<<<<<<< Updated upstream
 };
 
 animate();
+=======
+  };
+>>>>>>> Stashed changes
