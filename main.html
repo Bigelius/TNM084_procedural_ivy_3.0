@@ -18,6 +18,7 @@
     <script src="./rules.js"></script>
     <script src="./graphics.js"></script>
 
+    <!-- Återställningsknappar, men de gör inte så mycket -->
     <div>
         <!-- Button to Generate Three.js Scene -->
         <button id="generateButton" onclick="generateScene()">Generate Tree Scene</button>
@@ -31,12 +32,15 @@
 
         <h4>Select Parameter Values</h4>
 
+        <!-- Seed slider, hur är denna kopplad till random-värdet? -->
         <div class="container">
             <label for="randomSeedSlider">Select a seed:</label>
             <input type="range" id="randomSeedSlider" name="randomSeedSlider" min="0" max="100" value="50">
             <p> Res: <span id="sliderValue">50</span></p>
         </div>
 
+        <!-- Radius slider -->
+        <!-- Är inte kopplad till något atm -->
         <div class="container">
             <label for="parameterSlider_1">Select a sphere radius:</label>
             <input type="range" id="parameterSlider_1" name="parameterSlider_1" min="0" max="5" value="2">
@@ -44,6 +48,7 @@
 
         </div>
 
+        <!-- Start position slider -->
         <div class="container">
             <label for="startPositionSlider">Select a start position:</label>
             <input type="range" id="startPositionSlider" name="startPositionSlider" min="0" max="100" value="50">
@@ -54,7 +59,7 @@
 
         <h4>__________________________________________</h4>
 
-
+        <!-- Används inte atm -->
         <div class="container">
             <label for="parameterSlider_2">Select a value:</label>
             <input type="range" id="parameterSlider_2" name="parameterSlider_2" min="0" max="5" value="3.5">
@@ -64,6 +69,7 @@
 
         <h4>__________________________________________</h4>
 
+        <!-- Uppdaterar värdena och ritar nytt träd -->
         <h4>Generate Ivy</h4>
         <button id="myButton" onclick="myFunction()">Generate tree</button>
 
@@ -74,7 +80,7 @@
 
     
     <script>
-
+        //Borde sättas till slider-värden på en gång!
         var seed = 50;
         var parameter_1 = 3;
         var parameter_2 = 4;
@@ -124,8 +130,6 @@
 
             const slider = event.target;
             var sliderId = slider.id;
-            console.log("slider")
-            console.log(slider)
             const sliderValue = slider.value;
 
             switch (slider.id) {

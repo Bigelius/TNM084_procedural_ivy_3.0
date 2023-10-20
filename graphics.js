@@ -13,7 +13,7 @@ var sentence = [];
     var girthShrinkRates = [];
 
 
-    var segmentLength = 2;
+    var segmentLength = 2; //1,5 bättre för att inte gå över så många voxlar?
     var rootCoord = new THREE.Vector3(0, 0, 0);
 }
 
@@ -61,7 +61,6 @@ function coord2Index(coord) {
 
 var possibleStartPositions = [];
 
-
 //'False' = tom voxel
 //OBS: Index 0 - 19!!
 var voxelMid = new THREE.Vector3(0, 0, 0);
@@ -80,9 +79,14 @@ function drawVoxel(pos) {
     seg.position.set(pos.x, pos.y, pos.z);
 
     line.position.set(pos.x, pos.y, pos.z);
-
+    
+    //Adds to scene and draws when 'generate'
     scene.add(line);
     scene.add(seg);
+    
+    //Adds to object list so they can be deleted
+    objects.push(line);
+    objects.push(seg);
 }
 
 function makeVoxelMatrix(size) {
@@ -166,8 +170,8 @@ function makeVoxelMatrix(size) {
 function initialStartPosition(paramValue, paramLenght) {
     let len = possibleStartPositions.length;
     
-    console.log("list len");
-    console.log(len);
+    //console.log("list len");
+    //console.log(len);
     let scale = paramLenght / len;  //Hur många param-värden per faktiskt startindex
     let normIndex = paramValue / scale;            //Hur många faktiska index skickar vi in från parameter
     let index = Math.floor(normIndex);
@@ -254,16 +258,25 @@ function init() {
     
     //Skapar / ritar matrisen
     possibleStartPositions = []; //Nollställer startpos innan man lägger till nya
-    myMatrix = makeVoxelMatrix(20);
+    myMatrix = makeVoxelMatrix(20); //Skriver över den gamla, behöver inte nollställas
     
     //To see the color of the object we need a light for it
-    var light = new THREE.PointLight(0xFFFFFF, 1, 500);
-
-    light.position.set(10, 0, 5); //(x,y,z)
+    var light1 = new THREE.PointLight(0xFFFFFF, 1, 500);
+    var light2 = new THREE.PointLight(0xFFFFFF, 1, 500);
+    var light3 = new THREE.PointLight(0xFFFFFF, 1, 500);
+    var light4 = new THREE.PointLight(0xFFFFFF, 1, 500);
+    
+    light1.position.set(0,  10, 0); //(x,y,z)
+    light2.position.set(20, 10, 0); //(x,y,z)
+    light3.position.set(20, 10, 20); //(x,y,z)
+    light4.position.set(0,  10, 20); //(x,y,z)
     //(color, intensity, distance)
 
     //For everything we create, we need to add (and render the whole scene)
-    scene.add(light);
+    scene.add(light1);
+    scene.add(light2);
+    scene.add(light3);
+    scene.add(light4);
 
 }
 
@@ -325,21 +338,21 @@ function createTreeSegment(pos, rot, char, lenght, bottomGirth) {
     var seg = new THREE.Mesh(g, m);
 
     //    var rand_rot = getDir(char);
-    var rand_rot = Math.PI * char.rand;
+    //var rand_rot = Math.PI * char.rand;
 
     if (current_index = 0) { rand_rot = 0 }
     //console.log(rand_rot)
 
-    //seg.position.set(pos.x, pos.y, pos.z);
-    //seg.rotation.set(rot.x, rot.y, rot.z);
-    //line.position.set(pos.x, pos.y, pos.z);
-    //line.rotation.set(rot.x , rot.y, rot.z);
+    seg.position.set(pos.x, pos.y, pos.z);
+    seg.rotation.set(rot.x, rot.y, rot.z);
+    line.position.set(pos.x, pos.y, pos.z);
+    line.rotation.set(rot.x , rot.y, rot.z);
 
     //Ändra tillbaka det här och sätt rand i createTree
-    seg.position.set(pos.x, pos.y, pos.z);
+    /*seg.position.set(pos.x, pos.y, pos.z);
     seg.rotation.set(rot.x + rand_rot, rot.y + rand_rot, rot.z + 0);
     line.position.set(pos.x, pos.y, pos.z);
-    line.rotation.set(rot.x + rand_rot, rot.y + rand_rot, rot.z + 0);
+    line.rotation.set(rot.x + rand_rot, rot.y + rand_rot, rot.z + 0);*/
 
     //Translate in new segment direction
     seg.translateY(lenght / 2);
