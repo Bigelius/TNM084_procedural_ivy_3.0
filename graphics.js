@@ -13,10 +13,10 @@ var sentence = [];
     var girthShrinkRates = [];
 
 
-    var segmentLength = 2; //1,5 bättre för att inte gå över så många voxlar?
+    var segmentLength = 2.5; //1,5 bättre för att inte gå över så många voxlar?
     var rootCoord = new THREE.Vector3(0, 0, 0);
+    	
 }
-
 var tempVec = new THREE.Vector3(0, 0, 0)
 var starts = [];
 var NEXT_COORD;
@@ -43,16 +43,19 @@ function pointDist(a, b) {
     return absVec3(diff);
 }
 function coord2Index(coord) {
-    if (coord.x > x_side - 1) {
+    if (coord.x > 20 - 1) {
         console.log("X COORDINATE OUT OF BOUNDS")
+        return null;
     }
-    else if (coord.y > y_side - 1) {
+    else if (coord.y > 20 - 1) {
         console.log("Y COORDINATE OUT OF BOUNDS")
+        return null;
     }
-    else if (coord.z > z_side - 1) {
+    else if (coord.z > 20 - 1) {
         console.log("Z COORDINATE OUT OF BOUNDS")
+        return null;
     }
-    else return new THREE.Vector3(floor(coord.x), floor(coord.y), floor(coord.z));
+    else return new THREE.Vector3(Math.floor(coord.x), Math.floor(coord.y), Math.floor(coord.z));
 }
 /*****************************************
 *    MATRISEN OCH INITIALA VOXLAR
@@ -181,32 +184,42 @@ function initialStartPosition(paramValue, paramLenght) {
 
 //EJ KONTROLLERAD
 function isEmpty(index) {
-    if (matrix[index.i][index.j][index.k] = false)
+    console.log(index);
+    if(index == null) return false;
+    
+    if (myMatrix[index.x][index.y][index.z] = false)
         return false;
     else return true;
 }
 
 //EJ KONTROLLERAD!
 //True om ingen krock, uppdaterar matrisen 
-/*function noCollision(coord, rot){
-    var midCoord;
-	
-    var tempSegment = new THREE.CylinderGeometry(radiusTop, radiusBottom, lenght, 12);
-    //Oklart om detta behövs, men har inte testat än
-    //var g = new THREE.CylinderGeometry(radiusTop, //radiusBottom, lenght, 12);
-    //var edges = new THREE.EdgesGeometry(g);
-    //var m = new THREE.MeshLambertMaterial({ color: 0xFFCC00 });
-    //var tempSegment = new THREE.Mesh(g, m);
-	
-    seg.position.set(coord.x, coord.y, coord.z);
-    seg.rotation.set(rot.x, rot.y, rot.z);
+function noCollision(pos, rot){
     
-    tempSegment.TranslateY(segLen/2);
-    tempSegment.getWorldCoord(tempCoordinate);
+    let tempCoordinate = new THREE.Vector3(0,0,0); //Stores the first mid coordinate
 	
-    if(isEmpty(midCoord)){
-        var endCoord;
-        tempSegment.TranslateY(segLen/2);
+    //var g = new THREE.CylinderGeometry(radiusTop, radiusBottom, lenght, 12);
+    var g = new THREE.CylinderGeometry(radiusTop, radiusBottom, segmentLength, 12);
+    var edges = new THREE.EdgesGeometry(g);
+    let line_temp = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x000000 }));
+    
+    line_temp.position.set(pos.x, pos.y, pos.z);
+    line_temp.rotation.set(rot.x , rot.y, rot.z);
+    
+    
+    line_temp.translateY(segmentLength / 2);
+    
+    console.log("line_temp pos")
+    console.log(line_temp.position)
+    
+    line_temp.getWorldPosition(tempCoordinate);
+	
+    console.log("tempCoord");
+    console.log(tempCoordinate);
+    
+    if(isEmpty(coord2Index(tempCoordinate))){
+        /*let endCoord;
+        tempSegment.TranslateY(segmentLength/2);
         tempSegment.getWorldCoord(endCoord);
 
         if(isEmpty(endCoord)){
@@ -217,11 +230,12 @@ function isEmpty(index) {
             matrix[endCoord.x][endCoord.y][endCoord.z] = false;
             return true
         }
-        else return false
+        else return false*/
+        return true;
     } 
     //OBS: Kan inte leta efter ny väg i noCollision eftersom väg-funktionen använder noCollision!
     else return false
-}*/
+}
 
 
 /*****************************************
@@ -442,7 +456,9 @@ function createTree(start_INDEX, end_INDEX, startPosition, c_rot, segLen, segGir
             currentGirth = nextSegGirth
 
             //var b_rot = new THREE.Vector3(c_rot.x, c_rot.y + Math.PI / 5, c_rot.z + Math.PI / 5); //New initial rotation for branch    
-            var b_rot = new THREE.Vector3(c_rot.x, c_rot.y, c_rot.z); //New initial rotation for branch    
+            //Currently don't have standard initial rotation
+            let branchRot = Math.PI * sentence[current_index].rand;
+            var b_rot = new THREE.Vector3(c_rot.x + branchRot, c_rot.y + branchRot, c_rot.z); //New initial rotation for branch    
 
             createTree(current_index + 1, lbi, rootCoord, b_rot, segLen, currentGirth); //Make new branch with the new initial specs
 
@@ -453,7 +469,16 @@ function createTree(start_INDEX, end_INDEX, startPosition, c_rot, segLen, segGir
 
 
         else if (sentence[current_index].instruction != "]" && sentence[current_index].instruction != "-" && sentence[current_index].instruction != "+") {
-            createTreeSegment(rootCoord, c_rot, sentence[current_index], segmentLength, currentGirth);
+            
+            let segRandRot = Math.PI * sentence[current_index].rand;
+            let segRot = new THREE.Vector3(c_rot.x + segRandRot, c_rot.y + segRandRot, c_rot.z);
+            
+            if(noCollision(rootCoord, segRot)){
+                createTreeSegment(rootCoord, segRot, sentence[current_index], segmentLength, currentGirth);
+               }
+            else current_index = end_INDEX;
+            
+            
         }
 
         else {
