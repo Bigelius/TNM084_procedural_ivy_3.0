@@ -1,4 +1,4 @@
-console.log("read randomNumberGenerator...")
+//console.log("read randomNumberGenerator...")
 
 
 // Parameters for the trigonometric function // kanske onödigt...
@@ -38,11 +38,11 @@ function generateTruncatedRandom(M, x) {
     // Draw scatter 
     //drawScatterPlot(allCoordinates, { "y": frac_a, "x": x })
 
-    AllOutcome(M)
+    //AllOutcome(M)
    // drawScatterPlot(allCoordinates, { "y": frac_a, "x": x })
 
 
 
-    return frac_a;
+    return frac_a; //Decimaltal mellan 0 -> 0.99
 };
 

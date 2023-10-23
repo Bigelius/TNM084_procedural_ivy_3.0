@@ -1,3 +1,16 @@
+/* BUGGLISTA
+*   [x]      coord2Ind(coord)
+*   [x]     drawVoxel(pos, state)
+*   [x]      makeVoxelMatrix(size)
+*   [x]      initialStartPosition(paramValue, paramLength)
+*   [x]     isEmpty(index)
+*   []      noCollision(pos, rot)
+*   []      findPath(posRot)
+*   []      createTree(start_INDEX, end_INDEX, startPosition, c_rot, segLen, segGirth)
+
+*/
+
+
 var sentence = [];
 //SPECS FÖR CYLINDERN 
 {
@@ -13,7 +26,7 @@ var sentence = [];
     var girthShrinkRates = [];
 
 
-    var segmentLength = 2.5; //1,5 bättre för att inte gå över så många voxlar?
+    var segmentLength = 1.8;
     var rootCoord = new THREE.Vector3(0, 0, 0);
     	
 }
@@ -42,17 +55,20 @@ function pointDist(a, b) {
     let diff = subVec3(a, b);
     return absVec3(diff);
 }
+//OBS: KAN RETURNERA NULL!!
 function coord2Index(coord) {
-    if (coord.x > 20 - 1) {
-        console.log("X COORDINATE OUT OF BOUNDS")
+    //console.log("coord2ind coord:")
+    //console.log(coord)
+    if (coord.x > 20 - 1 || coord.x < 0){
+        //console.log("X COORDINATE OUT OF BOUNDS")
         return null;
     }
-    else if (coord.y > 20 - 1) {
-        console.log("Y COORDINATE OUT OF BOUNDS")
+    else if (coord.y > 20 - 1 || coord.y < 0) {
+        //console.log("Y COORDINATE OUT OF BOUNDS")
         return null;
     }
-    else if (coord.z > 20 - 1) {
-        console.log("Z COORDINATE OUT OF BOUNDS")
+    else if (coord.z > 20 - 1 || coord.z < 0) {
+        //console.log("Z COORDINATE OUT OF BOUNDS")
         return null;
     }
     else return new THREE.Vector3(Math.floor(coord.x), Math.floor(coord.y), Math.floor(coord.z));
@@ -64,32 +80,35 @@ function coord2Index(coord) {
 
 var possibleStartPositions = [];
 
-//'False' = tom voxel
+//False = upptagen voxel.
+//True om ledig
 //OBS: Index 0 - 19!!
 var voxelMid = new THREE.Vector3(0, 0, 0);
 
-function drawVoxel(pos) {
+function drawVoxel(pos, state) {
+
+    let offset = 0.5;   //Compensate for floored index and centralized origin
 
     var g = new THREE.CubeGeometry(1, 1, 1);
     var edges = new THREE.EdgesGeometry(g);
-
     var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x000000 }));
-    var m = new THREE.MeshLambertMaterial({ color: 0xfc0324 });
-    m.transparent = true;
-    m.opacity = 0.1;
-    var seg = new THREE.Mesh(g, m);
-
-    seg.position.set(pos.x, pos.y, pos.z);
-
-    line.position.set(pos.x, pos.y, pos.z);
     
-    //Adds to scene and draws when 'generate'
-    scene.add(line);
-    scene.add(seg);
+    line.position.set(pos.x + offset, pos.y + offset, pos.z + offset);
+    scene.add(line);    //Adds to scene and draws when 'generate'
+    objects.push(line); //Adds to object list so they can be deleted
     
-    //Adds to object list so they can be deleted
-    objects.push(line);
-    objects.push(seg);
+    //If filled voxel, make it red
+    if(state == true){
+        var m = new THREE.MeshLambertMaterial({ color: 0xfc0324 });
+        m.transparent = true;
+        m.opacity = 0.1;
+        var seg = new THREE.Mesh(g, m);
+
+        seg.position.set(pos.x + offset, pos.y + offset, pos.z + offset);
+        scene.add(seg);
+        objects.push(seg);
+    }
+    
 }
 
 function makeVoxelMatrix(size) {
@@ -133,30 +152,31 @@ function makeVoxelMatrix(size) {
 
             while (k < size) {
                 //Find center of voxel
-                voxelMid = new THREE.Vector3(i + 0.5, j + 0.5, k + 0.5);
+                voxelMid = new THREE.Vector3(i, j, k);
                 //Ritar hela voxel-fältet
-                //drawVoxel(voxelMid);
+                //drawVoxel(voxelMid, false);
 
                 var dist = pointDist(voxelMid, sphereMid);
                 //Is the voxel on floor and outside sphere?
                 if (j == 0 && dist > radIn) {
                     mat_xyz[i][j][k] = true;
                     //Ritar marken
-                    //drawVoxel(voxelMid);
+                    //drawVoxel(voxelMid, false);
                 }
                 //Is the voxel close to the sphere? (Inre radie < V < yttre radie)
                 else if (dist > radIn && dist < radOut) {
                     mat_xyz[i][j][k] = true;
 
                     //Ritar lager runt sfär
-                    //drawVoxel(voxelMid);
+                    drawVoxel(voxelMid, false);
 
                     //Lägger till möjliga startpunkter i listan
                     //Tror inte den funkar för j=0 i.o.m. mid-kompensation
                     if (j == 1) {
+                        //Coordinate in center of voxel
                         possibleStartPositions.push(new THREE.Vector3(i + 0.5, j, k + 0.5));
                         //Ritar startvoxlar
-                        drawVoxel(voxelMid);
+                        //drawVoxel(voxelMid, false);
                     }
                 }
                 k++;
@@ -170,73 +190,156 @@ function makeVoxelMatrix(size) {
 }
 
 //Return start position (vec3) from list
-function initialStartPosition(paramValue, paramLenght) {
+function initialStartPosition(paramValue, paramLength) {
     let len = possibleStartPositions.length;
     
     //console.log("list len");
     //console.log(len);
-    let scale = paramLenght / len;  //Hur många param-värden per faktiskt startindex
+    let scale = paramLength / len;  //Hur många param-värden per faktiskt startindex
     let normIndex = paramValue / scale;            //Hur många faktiska index skickar vi in från parameter
     let index = Math.floor(normIndex);
     return possibleStartPositions[index]; //This is a vec3
     
     }
 
-//EJ KONTROLLERAD
+// Return true/false
+// Hanterar null-värden
 function isEmpty(index) {
-    console.log(index);
+    //console.log(index);
     if(index == null) return false;
     
-    if (myMatrix[index.x][index.y][index.z] = false)
+    //console.log("matrix value")
+    //console.log(myMatrix[index.x][index.y][index.z])
+    if (myMatrix[index.x][index.y][index.z] == false)
         return false;
     else return true;
 }
 
 //EJ KONTROLLERAD!
-//True om ingen krock, uppdaterar matrisen 
+//True om ingen krock, uppdaterar matrisen
+//Tar in rot MED random-värde
 function noCollision(pos, rot){
-    
-    let tempCoordinate = new THREE.Vector3(0,0,0); //Stores the first mid coordinate
-	
-    //var g = new THREE.CylinderGeometry(radiusTop, radiusBottom, lenght, 12);
-    var g = new THREE.CylinderGeometry(radiusTop, radiusBottom, segmentLength, 12);
-    var edges = new THREE.EdgesGeometry(g);
-    let line_temp = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x000000 }));
-    
-    line_temp.position.set(pos.x, pos.y, pos.z);
-    line_temp.rotation.set(rot.x , rot.y, rot.z);
-    
-    
-    line_temp.translateY(segmentLength / 2);
-    
-    console.log("line_temp pos")
-    console.log(line_temp.position)
-    
-    line_temp.getWorldPosition(tempCoordinate);
-	
-    console.log("tempCoord");
-    console.log(tempCoordinate);
-    
-    if(isEmpty(coord2Index(tempCoordinate))){
-        /*let endCoord;
-        tempSegment.TranslateY(segmentLength/2);
-        tempSegment.getWorldCoord(endCoord);
+    if(pos == null){
+        return false;
+    }
+    else{
+        //console.log("noCollision: rotation input:")
+        //console.log(rot)
+                
+        //2 temp vectors
+        let midCoord = new THREE.Vector3(0,0,0); //Stores middle coord
+        let endCoord = new THREE.Vector3(0,0,0); //Stores end coord
+        
+        //temp cylinder
+        let g = new THREE.CylinderGeometry(radiusTop, radiusBottom, segmentLength, 12);
+        let edges = new THREE.EdgesGeometry(g);
+        let line_temp = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x000000 }));
+        
+        //Initial position and rotation
+        line_temp.position.set(pos.x, pos.y, pos.z);
+        line_temp.rotation.set(rot.x , rot.y, rot.z);
+        //line_temp.translateY(segmentLength / 2);        //Translate to get new midCoord
+        line_temp.translateY(segmentLength);        //Translate to get new midCoord
+        line_temp.getWorldPosition(midCoord);           //Update midCoord to new coordinates
 
-        if(isEmpty(endCoord)){
+        //enkelkollning
+        if(coord2Index(midCoord) != null && isEmpty(coord2Index(midCoord))){
+
             midCoord = coord2Index(midCoord);
-            endCoord = coord2Index(temoCoord2);
-            
-            matrix[midCoord.x][midCoord.y][midCoord.z] = false;
-            matrix[endCoord.x][endCoord.y][endCoord.z] = false;
+            myMatrix[midCoord.x][midCoord.y][midCoord.z] = false;
+            drawVoxel(new THREE.Vector3(midCoord.x, midCoord.y, midCoord.z), true);
+                
             return true
+            
         }
-        else return false*/
-        return true;
-    } 
-    //OBS: Kan inte leta efter ny väg i noCollision eftersom väg-funktionen använder noCollision!
-    else return false
+        //Dubbelkollning
+        /*if(coord2Index(midCoord) != null && isEmpty(coord2Index(midCoord))){
+
+            line_temp.translateY(segmentLength/2);      //Translate it further
+            line_temp.getWorldPosition(endCoord);       //Update endCoord to new coordinates
+            
+            if(coord2Index(endCoord) != null && isEmpty(coord2Index(endCoord))){
+                
+                //De här funkar
+                midCoord = coord2Index(midCoord);
+                endCoord = coord2Index(endCoord);
+                
+                myMatrix[midCoord.x][midCoord.y][midCoord.z] = false;
+                myMatrix[endCoord.x][endCoord.y][endCoord.z] = false;
+
+                //Draw all the new filled voxels
+                drawVoxel(new THREE.Vector3(midCoord.x, midCoord.y, midCoord.z), true);
+                //drawVoxel(new THREE.Vector3(endCoord.x, endCoord.y, endCoord.z), true);
+                return true
+            }
+            else return false
+            console.log("jag krockade")
+        } */
+        
+        //OBS: Kan inte leta efter ny väg i noCollision eftersom väg-funktionen använder noCollision!
+        else return false
+        console.log("jag krockade")
+    }
+    
 }
 
+//Tar in rot UTAN random-värde
+//Return rot eller null
+function findPath(pos, rot){
+    let rotX = rot.x
+    let rotY = rot.y;
+    let dx = Math.PI / 6;
+    let dy = Math.PI / 3;
+    var tempRot = new THREE.Vector3(0,0,0);
+    
+    //NoCollision kan hantera null från coord2ind
+    /*console.log("findPath: noCollision input test #1:");
+    console.log("__________________");
+    console.log("Position:");
+    console.log(pos);
+    console.log("coord2Index(Pos):");
+    console.log(coord2Index(pos));
+    console.log("Rotation:");
+    console.log(rot);
+    console.log("noCollision(c2ind(pos), rot)):");
+    console.log(noCollision(coord2Index(pos), rot));
+    */
+    if(noCollision(coord2Index(pos), rot)){
+        return rot;
+    }
+    else{
+        let xStep = 0;
+        let yStep = 0;
+        while(xStep < 3){
+            rotX = rotX + dx;
+            while(yStep < 6){
+                rotY = rotY + dy; 
+                tempRot.x = rotX;
+                tempRot.y = rotY;
+                
+                /*console.log("findPath: noCollision input test #2:");
+                console.log("__________________");
+                console.log("Position:");
+                console.log(pos);
+                console.log("Rotation:");
+                console.log(tempRot);
+                console.log("coord2Index(Pos):");
+                console.log(coord2Index(pos));
+                console.log("noCollision(c2ind(pos), rot)):");
+                console.log(noCollision(coord2Index(pos), tempRot));
+                console.log("blev det nån vektor här?");*/
+                
+                if(noCollision(coord2Index(pos), tempRot)){
+                    return tempRot;
+                }
+                yStep++;
+            }
+            yStep = 0;
+            xStep++;
+        }
+    }
+    return null;
+}
 
 /*****************************************
 *               INITIALISERING
@@ -268,7 +371,7 @@ function init() {
     camera.position.y = 5;
     camera.position.z = 30;
 
-    //camera.rotation.x = - Math.PI / 6;
+    //camera.rotation.y = Math.PI / 3;
     
     //Skapar / ritar matrisen
     possibleStartPositions = []; //Nollställer startpos innan man lägger till nya
@@ -311,7 +414,6 @@ function deleteObjects() {
     sum = 0;
     radiusBottom = 0.1;
     radiusTop = 0.1;
-    segmentLength = 1;
     rootCoord = new THREE.Vector3(0, 0, 0);
 
     tempVec = new THREE.Vector3(0, 0, 0)
@@ -335,14 +437,14 @@ function setNewGirth(oldGirth, shrinkStep) {
 
 }
 
-function createTreeSegment(pos, rot, char, lenght, bottomGirth) {
+function createTreeSegment(pos, rot, char, length, bottomGirth) {
     //console.log("bottomGirth : " + bottomGirth)
 
     var topGirth = setNewGirth(currentGirth, girthShrinkRates[girthShrinkRates.length - 1]);
     currentGirth = topGirth;
 
-    //var g = new THREE.CylinderGeometry(radiusTop, radiusBottom, lenght, 12);
-    var g = new THREE.CylinderGeometry(currentGirth, bottomGirth, lenght, 12);
+    //var g = new THREE.CylinderGeometry(radiusTop, radiusBottom, length, 12);
+    var g = new THREE.CylinderGeometry(currentGirth, bottomGirth, length, 12);
     var edges = new THREE.EdgesGeometry(g);
 
     var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x000000 }));
@@ -369,8 +471,8 @@ function createTreeSegment(pos, rot, char, lenght, bottomGirth) {
     line.rotation.set(rot.x + rand_rot, rot.y + rand_rot, rot.z + 0);*/
 
     //Translate in new segment direction
-    seg.translateY(lenght / 2);
-    line.translateY(lenght / 2);
+    seg.translateY(length / 2);
+    line.translateY(length / 2);
 
     scene.add(line);
     scene.add(seg);
@@ -378,7 +480,7 @@ function createTreeSegment(pos, rot, char, lenght, bottomGirth) {
     //Returnerar nästa startposition (toppen på det här segmentet)
 
     var temp = new THREE.LineSegments().copy(line);
-    temp.translateY(lenght / 2);
+    temp.translateY(length / 2);
     temp.getWorldPosition(rootCoord); //Sparar ny coordinat i rootCoord
 
     objects.push(seg)
@@ -427,12 +529,15 @@ function getDepthOfSubtree(start_INDEX) {
 
 }
 
-function createTree(start_INDEX, end_INDEX, startPosition, c_rot, segLen, segGirth) {
+function createTree(start_INDEX, end_INDEX, startPosition, c_rot, len, segGirth) {
     // Iterator som ändras. 
+    //console.log("Len i träd")
+    //console.log(len)
 
     var current_index = start_INDEX;
-    var oldPosition = startPosition; //Sparar pos-koordinaten som en temp
-    var dustyOldVec = tempVec;
+    let oldPosition = startPosition; //Sparar pos-koordinaten som en temp
+    let dustyOldVec = tempVec;
+    let branchDir = new THREE.Vector3(c_rot.x, c_rot.y, c_rot.z);
 
 
     //Loop over local main branch segments
@@ -446,8 +551,8 @@ function createTree(start_INDEX, end_INDEX, startPosition, c_rot, segLen, segGir
 
             var wtf = new THREE.Vector3(rootCoord.x, rootCoord.y, rootCoord.z);
             starts.push(wtf) //Latest saved initial position as a temp
-
-
+            
+            //GIRTH
             girthStarts.push(currentGirth)
             var subtreeDepth = getDepthOfSubtree(current_index)
             var shrinkRate = segGirth / (subtreeDepth + 1)
@@ -455,12 +560,13 @@ function createTree(start_INDEX, end_INDEX, startPosition, c_rot, segLen, segGir
             var nextSegGirth = setNewGirth(currentGirth, shrinkRate)
             currentGirth = nextSegGirth
 
-            //var b_rot = new THREE.Vector3(c_rot.x, c_rot.y + Math.PI / 5, c_rot.z + Math.PI / 5); //New initial rotation for branch    
             //Currently don't have standard initial rotation
             let branchRot = Math.PI * sentence[current_index].rand;
-            var b_rot = new THREE.Vector3(c_rot.x + branchRot, c_rot.y + branchRot, c_rot.z); //New initial rotation for branch    
-
-            createTree(current_index + 1, lbi, rootCoord, b_rot, segLen, currentGirth); //Make new branch with the new initial specs
+            let newRotation = new THREE.Vector3(branchDir.x + branchRot, branchDir.y + branchRot, branchDir.z); //New initial rotation for branch    
+            
+            //console.log("SegLen som skickas till ny gren:")
+            //console.log(len)
+            createTree(current_index + 1, lbi, rootCoord, newRotation, len, currentGirth); //Make new branch with the new initial specs
 
             //Updates the index 
             current_index = lbi; //Go to next index after recursive branch
@@ -468,17 +574,37 @@ function createTree(start_INDEX, end_INDEX, startPosition, c_rot, segLen, segGir
         }
 
 
-        else if (sentence[current_index].instruction != "]" && sentence[current_index].instruction != "-" && sentence[current_index].instruction != "+") {
+        else if (sentence[current_index].instruction != "]") {
             
             let segRandRot = Math.PI * sentence[current_index].rand;
-            let segRot = new THREE.Vector3(c_rot.x + segRandRot, c_rot.y + segRandRot, c_rot.z);
+            let segRot = new THREE.Vector3(branchDir.x + segRandRot, branchDir.y + segRandRot, branchDir.z);
             
             if(noCollision(rootCoord, segRot)){
-                createTreeSegment(rootCoord, segRot, sentence[current_index], segmentLength, currentGirth);
+                createTreeSegment(rootCoord, segRot, sentence[current_index], len, currentGirth);
                }
-            else current_index = end_INDEX;
-            
-            
+            else{
+                console.log("****************************")
+                console.log("KROCKADE. LETAR EFTER NY VÄG")
+                console.log("****************************")
+                console.log("RootCoord:")
+                console.log(rootCoord)
+                console.log("BranchDirection:")
+                console.log(branchDir)
+                
+                
+                let newPath = findPath(rootCoord, branchDir);
+                console.log("****************************")
+                console.log("The new path:")
+                console.log(newPath)
+                console.log("****************************")
+                
+                //If no path --> break branch. Else --> Build in working dierction and update the general branch direction 
+                if(newPath == null) 
+                    current_index = end_INDEX;
+                else 
+                    createTreeSegment(rootCoord, newPath, sentence[current_index], len, currentGirth);
+                    branchDir = newPath;
+            }   
         }
 
         else {
@@ -511,7 +637,7 @@ function createTree(start_INDEX, end_INDEX, startPosition, c_rot, segLen, segGir
 ******************************************/
 
 function generateScene(M, sphereRadie) {
-    console.log("generateScene()");
+    //console.log("generateScene()");
 
     init();
 
@@ -541,15 +667,17 @@ function generateScene(M, sphereRadie) {
     sentence.shift();
     sentence.pop();
     
-    rootCoord = initialStartPosition(startPosition, startPosition_lenght);
+    //Parameter-variabler från main
+    rootCoord = initialStartPosition(startPosition, startPosition_length);
     
-    console.log("rootCoord");
-    console.log(rootCoord);
-    drawVoxel(rootCoord); //Lägg till 
+    //console.log("rootCoord");
+    //console.log(rootCoord);
+    //drawVoxel(rootCoord, true); //Lägg till 
+    console.log("***********************************");
+    console.log("****   NU RITAS TRÄDET ****");
+    console.log("***********************************");
+    
     createTree(0, sentence.length - 1, rootCoord, new THREE.Vector3(0, 0, 0), segmentLength, currentGirth);
-
-    //drawVoxel(new THREE.Vector3(0, 0, 0))
-    
 
     renderer.render(scene, camera);
     document.getElementById("deleteButton").disabled = false;
