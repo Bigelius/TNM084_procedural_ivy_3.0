@@ -372,9 +372,9 @@ function init() {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, sceneContainer.clientWidth / sceneContainer.clientHeight, 0.1, 1000);
     //camera = new THREE.OrthographicCamera(-5, 5, 5, -5, - 20, 1000);
-    camera.position.x = 10;
-    camera.position.y = 5;
-    camera.position.z = 30;
+    camera.position.x = 0;
+    camera.position.y = 20;
+    camera.position.z = 0;
 
     //camera.rotation.y = Math.PI / 3;
     
@@ -424,6 +424,13 @@ function deleteObjects() {
     tempVec = new THREE.Vector3(0, 0, 0)
     starts = [];
     NEXT_COORD;
+
+    max_radiusBottom = 0.7;
+    min_radiusTop = 0.1;
+
+    currentGirth = max_radiusBottom;
+    girthStarts = [];
+    girthShrinkRates = [];
 
     sentence = [];
 
@@ -708,11 +715,11 @@ const animate = () => {
     requestAnimationFrame(animate);
 
     // Rotate the camera around the scene's origin
-    const radius = 5;
+    const radius = 10;
     const angle = Date.now() * 0.0005;
     camera.position.x = radius * Math.cos(angle);
     camera.position.z = radius * Math.sin(angle);
-    camera.lookAt(0, 10, 0);
+    camera.lookAt(20, 0, 20);
 
     renderer.render(scene, camera);
 };
