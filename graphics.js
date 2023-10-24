@@ -26,7 +26,7 @@ var sentence = [];
     var girthShrinkRates = [];
 
 
-    var segmentLength = 1.8;
+    var segmentLength = 1.5;
     var rootCoord = new THREE.Vector3(0, 0, 0);
     	
 }
@@ -164,11 +164,11 @@ function makeVoxelMatrix(size) {
                     //drawVoxel(voxelMid, false);
                 }
                 //Is the voxel close to the sphere? (Inre radie < V < yttre radie)
-                else if (dist > radIn && dist < radOut) {
+                else if (dist > radIn ){ //&& dist < radOut) {
                     mat_xyz[i][j][k] = true;
 
                     //Ritar lager runt sfär
-                    drawVoxel(voxelMid, false);
+                    //drawVoxel(voxelMid, false);
 
                     //Lägger till möjliga startpunkter i listan
                     //Tror inte den funkar för j=0 i.o.m. mid-kompensation
@@ -176,7 +176,7 @@ function makeVoxelMatrix(size) {
                         //Coordinate in center of voxel
                         possibleStartPositions.push(new THREE.Vector3(i + 0.5, j, k + 0.5));
                         //Ritar startvoxlar
-                        //drawVoxel(voxelMid, false);
+                        drawVoxel(voxelMid, false);
                     }
                 }
                 k++;
@@ -246,8 +246,10 @@ function noCollision(pos, rot){
         if(coord2Index(midCoord) != null && isEmpty(coord2Index(midCoord))){
 
             midCoord = coord2Index(midCoord);
+            let startCoord = coord2Index(pos);
             myMatrix[midCoord.x][midCoord.y][midCoord.z] = false;
-            drawVoxel(new THREE.Vector3(midCoord.x, midCoord.y, midCoord.z), true);
+            //drawVoxel(new THREE.Vector3(midCoord.x, midCoord.y, midCoord.z), true);
+            drawVoxel(new THREE.Vector3(startCoord.x, startCoord.y, startCoord.z), true);
                 
             return true
             
@@ -453,9 +455,6 @@ function createTreeSegment(pos, rot, char, length, bottomGirth) {
     m = getColor(char.instruction);
     var seg = new THREE.Mesh(g, m);
 
-    //    var rand_rot = getDir(char);
-    //var rand_rot = Math.PI * char.rand;
-
     if (current_index = 0) { rand_rot = 0 }
     //console.log(rand_rot)
 
@@ -463,12 +462,6 @@ function createTreeSegment(pos, rot, char, length, bottomGirth) {
     seg.rotation.set(rot.x, rot.y, rot.z);
     line.position.set(pos.x, pos.y, pos.z);
     line.rotation.set(rot.x , rot.y, rot.z);
-
-    //Ändra tillbaka det här och sätt rand i createTree
-    /*seg.position.set(pos.x, pos.y, pos.z);
-    seg.rotation.set(rot.x + rand_rot, rot.y + rand_rot, rot.z + 0);
-    line.position.set(pos.x, pos.y, pos.z);
-    line.rotation.set(rot.x + rand_rot, rot.y + rand_rot, rot.z + 0);*/
 
     //Translate in new segment direction
     seg.translateY(length / 2);
@@ -561,8 +554,8 @@ function createTree(start_INDEX, end_INDEX, startPosition, c_rot, len, segGirth)
             currentGirth = nextSegGirth
 
             //Currently don't have standard initial rotation
-            let branchRot = Math.PI * sentence[current_index].rand;
-            let newRotation = new THREE.Vector3(branchDir.x + branchRot, branchDir.y + branchRot, branchDir.z); //New initial rotation for branch    
+            let branchRot = Math.PI * sentence[current_index].rand / 2;
+            let newRotation = new THREE.Vector3(branchDir.x + branchRot, branchDir.y + branchRot, branchDir.z + branchRot); //New initial rotation for branch    
             
             //console.log("SegLen som skickas till ny gren:")
             //console.log(len)
@@ -573,30 +566,34 @@ function createTree(start_INDEX, end_INDEX, startPosition, c_rot, len, segGirth)
 
         }
 
-
         else if (sentence[current_index].instruction != "]") {
             
-            let segRandRot = Math.PI * sentence[current_index].rand;
-            let segRot = new THREE.Vector3(branchDir.x + segRandRot, branchDir.y + segRandRot, branchDir.z);
+            let segRandRot = 0; //Math.PI * sentence[current_index].rand / 2;
+            let segRot = new THREE.Vector3(branchDir.x - segRandRot, branchDir.y + segRandRot, branchDir.z);
             
-            if(noCollision(rootCoord, segRot)){
+            //Ta bort de här sen om resen avkommenteras!!
+            console.log("********************");
+            console.log("MEGATESTING");
+            console.log("********************");
+            console.log("RootCoord");
+            console.log(rootCoord);
+            console.log("Segment rotation");
+            console.log(segRot)
+            console.log("********************");
+            console.log("Vi klarade testet")
+            createTreeSegment(rootCoord, segRot, sentence[current_index], len, currentGirth);
+            
+            drawVoxel(new THREE.Vector3(rootCoord.x, rootCoord.y, rootCoord.z), true);
+             
+            
+            /*if(noCollision(rootCoord, segRot)){
                 createTreeSegment(rootCoord, segRot, sentence[current_index], len, currentGirth);
+                drawVoxel(coord2Index(new THREE.Vector3(rootCoord.x, rootCoord.y, rootCoord.z)), true);
+            
                }
             else{
-                console.log("****************************")
-                console.log("KROCKADE. LETAR EFTER NY VÄG")
-                console.log("****************************")
-                console.log("RootCoord:")
-                console.log(rootCoord)
-                console.log("BranchDirection:")
-                console.log(branchDir)
-                
                 
                 let newPath = findPath(rootCoord, branchDir);
-                console.log("****************************")
-                console.log("The new path:")
-                console.log(newPath)
-                console.log("****************************")
                 
                 //If no path --> break branch. Else --> Build in working dierction and update the general branch direction 
                 if(newPath == null) 
@@ -604,7 +601,9 @@ function createTree(start_INDEX, end_INDEX, startPosition, c_rot, len, segGirth)
                 else 
                     createTreeSegment(rootCoord, newPath, sentence[current_index], len, currentGirth);
                     branchDir = newPath;
-            }   
+                    drawVoxel(coord2Index(new THREE.Vector3(rootCoord.x, rootCoord.y, rootCoord.z)), true);
+            
+            }  */ 
         }
 
         else {
@@ -642,13 +641,14 @@ function generateScene(M, sphereRadie) {
     init();
 
     var axiom = "ABC"
-    var iteration = 1;
+    var iteration = 2;
     var raw_sentence = Lsystem(axiom, iteration, 0);
     // tempigt
     //raw_sentence = "[A[B[AA]BB]AAA]"
 
     raw_sentence = "[" + raw_sentence + "]";
 
+    console.log(raw_sentence);
     var split_sentence = raw_sentence.split('');
 
     // Get random number from seed
@@ -668,7 +668,6 @@ function generateScene(M, sphereRadie) {
     sentence.pop();
     
     //Parameter-variabler från main
-    rootCoord = initialStartPosition(startPosition, startPosition_length);
     
     //console.log("rootCoord");
     //console.log(rootCoord);
@@ -677,8 +676,12 @@ function generateScene(M, sphereRadie) {
     console.log("****   NU RITAS TRÄDET ****");
     console.log("***********************************");
     
+    //rootCoord = initialStartPosition(81, 100); 
+    //createTree(0, sentence.length - 1, initialStartPosition(81, 100), new THREE.Vector3(0, 0, 0), segmentLength, currentGirth);
+    
+    rootCoord = initialStartPosition(startPosition, startPosition_length);
     createTree(0, sentence.length - 1, rootCoord, new THREE.Vector3(0, 0, 0), segmentLength, currentGirth);
-
+    
     renderer.render(scene, camera);
     document.getElementById("deleteButton").disabled = false;
 

@@ -1,43 +1,25 @@
 /********************************************************************************
 L-SYSTEMET
 *********************************************************************************/
-//Supportar [A - G]
-//RING-TRÄD
-//var axiom = "A[A[B[B[C[C[D[D[E[E]]]]]]]]]BB"; //Vanlig ]";//
-//var axiom = "A[B[C[D[E[F[G[A[B[A]B[A[B]A]]]]]]]C[D]C]]A[B]A"; //Vanlig ]";//
-
-//var axiom = "A[B]A"; //Vanlig ]";//
-
-//var axiom = "A+[A+[B+[B+[C+[C+[D+[D+[E+[E]]]]]]]]]"; // + (Jättetrasig)
-//var axiom = "A-[B-[C-[D-[E-[A-[B-[C-[D-[E]]]]]]]]]"; // - (Jättetrasig)
-//BLAND-TRÄD
-//var axiom = "A[A[A[A]]BC]BC[ABC]DEFG"; //Vanlig
-//export const sentence = axiom.split('');
-
 //INTE KLAR ÄN
 // Alphabet (V) : A, B, [, ], +, - 
 // Axiom (omga) aka initial state : AB
 // Rules (P) : defines how you replace the symbels   
 
 function getRuleOf(symbol) {
-  /*
-    The rules : 
-        A -> BA
-        B -> AA
-  */
   var res = "";
 
   switch (symbol) {
     case "A":
-      res = "AB[AC]A";
+      res = "A[BB]";
       break;
 
     case "B":
-      res = "C[D]ADA";
+      res = "C[A]";
       break;
     
       case "C":
-      res = "A[AD]A[B]A";
+      res = "B[A]";
       break;
 
     case "[": break;
