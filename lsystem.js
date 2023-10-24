@@ -22,8 +22,12 @@ function getRuleOf(symbol) {
       res = "B[A]";
       break;
 
-    case "[": break;
-    case "]": break;
+    case "[": 
+      res = "[";
+    break;
+    case "]": 
+      res = "]";
+    break;
   }
 
   return res;
