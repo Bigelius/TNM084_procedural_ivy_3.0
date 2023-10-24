@@ -26,14 +26,14 @@ var sentence = [];
     var girthShrinkRates = [];
 
 
-    var segmentLength = 1.5;
+    var segmentLength = 2;
     var rootCoord = new THREE.Vector3(0, 0, 0);
     	
 }
 var tempVec = new THREE.Vector3(0, 0, 0)
 var starts = [];
 var NEXT_COORD;
-
+var matrixSize = 20;
 
 // Global variables
 var scene, camera, renderer;
@@ -117,7 +117,7 @@ function makeVoxelMatrix(size) {
     let k = 0;
 
     var sphereMid = new THREE.Vector3(size / 2, 1, size / 2);
-    var radIn = 7;
+    var radIn = 6;
     var radOut = 10;
     
     let mat_x = [Boolean];
@@ -220,6 +220,9 @@ function isEmpty(index) {
 //Tar in rot MED random-värde
 function noCollision(pos, rot){
     if(pos == null){
+        return false;
+    }
+    if(rot == null){
         return false;
     }
     else{
@@ -377,7 +380,7 @@ function init() {
     
     //Skapar / ritar matrisen
     possibleStartPositions = []; //Nollställer startpos innan man lägger till nya
-    myMatrix = makeVoxelMatrix(20); //Skriver över den gamla, behöver inte nollställas
+    myMatrix = makeVoxelMatrix(matrixSize); //Skriver över den gamla, behöver inte nollställas
     
     //To see the color of the object we need a light for it
     var light1 = new THREE.PointLight(0xFFFFFF, 1, 500);
@@ -568,11 +571,11 @@ function createTree(start_INDEX, end_INDEX, startPosition, c_rot, len, segGirth)
 
         else if (sentence[current_index].instruction != "]") {
             
-            let segRandRot = 0; //Math.PI * sentence[current_index].rand / 2;
+            let segRandRot = Math.PI * sentence[current_index].rand / 2;
             let segRot = new THREE.Vector3(branchDir.x - segRandRot, branchDir.y + segRandRot, branchDir.z);
             
             //Ta bort de här sen om resen avkommenteras!!
-            console.log("********************");
+            /*console.log("********************");
             console.log("MEGATESTING");
             console.log("********************");
             console.log("RootCoord");
@@ -583,27 +586,41 @@ function createTree(start_INDEX, end_INDEX, startPosition, c_rot, len, segGirth)
             console.log("Vi klarade testet")
             createTreeSegment(rootCoord, segRot, sentence[current_index], len, currentGirth);
             
-            drawVoxel(new THREE.Vector3(rootCoord.x, rootCoord.y, rootCoord.z), true);
+            drawVoxel(new THREE.Vector3(rootCoord.x, rootCoord.y, rootCoord.z), true);*/
              
             
-            /*if(noCollision(rootCoord, segRot)){
+            if(noCollision(rootCoord, segRot)){
+                console.log("YAY, GREN")
                 createTreeSegment(rootCoord, segRot, sentence[current_index], len, currentGirth);
                 drawVoxel(coord2Index(new THREE.Vector3(rootCoord.x, rootCoord.y, rootCoord.z)), true);
-            
                }
             else{
-                
+                console.log("Letar efter ny väg...")
                 let newPath = findPath(rootCoord, branchDir);
                 
                 //If no path --> break branch. Else --> Build in working dierction and update the general branch direction 
-                if(newPath == null) 
+                if(newPath == null){
+                    console.log("STOPP");
                     current_index = end_INDEX;
-                else 
-                    createTreeSegment(rootCoord, newPath, sentence[current_index], len, currentGirth);
-                    branchDir = newPath;
-                    drawVoxel(coord2Index(new THREE.Vector3(rootCoord.x, rootCoord.y, rootCoord.z)), true);
-            
-            }  */ 
+                    
+                } 
+                //BUGG HÄR, NULL POSITION!!    
+                else {
+                    console.log("HITTADE VÄG!! ... Eller?")
+                    let rootVoxelCoord = coord2Index(new THREE.Vector3(rootCoord.x, rootCoord.y, rootCoord.z));
+                    
+                    if(rootVoxelCoord == null){
+                        console.log("nah, out of bounds");
+                        current_index = end_INDEX;
+                    }
+                    else{
+                        console.log("ok, var faktiskt en gren"); //MEN FÅR EN FUCKING ERROR ÄNDÅ
+                        createTreeSegment(rootCoord, newPath, sentence[current_index], len, currentGirth);
+                        branchDir = newPath;
+                        drawVoxel((rootVoxelCoord), true);
+                    }
+                }
+            } 
         }
 
         else {
@@ -641,7 +658,7 @@ function generateScene(M, sphereRadie) {
     init();
 
     var axiom = "ABC"
-    var iteration = 2;
+    var iteration = 4;
     var raw_sentence = Lsystem(axiom, iteration, 0);
     // tempigt
     //raw_sentence = "[A[B[AA]BB]AAA]"
