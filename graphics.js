@@ -164,7 +164,8 @@ function makeVoxelMatrix(size) {
                     //drawVoxel(voxelMid, false);
                 }
                 //Is the voxel close to the sphere? (Inre radie < V < yttre radie)
-                else if (dist > radIn ){ //&& dist < radOut) {
+                //KOMMENTERA BORT ANDRA HALVAN AV DENNA FÖR STÖRRE YTA
+                else if (dist > radIn && dist < radOut) {
                     mat_xyz[i][j][k] = true;
 
                     //Ritar lager runt sfär
@@ -372,11 +373,11 @@ function init() {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, sceneContainer.clientWidth / sceneContainer.clientHeight, 0.1, 1000);
     //camera = new THREE.OrthographicCamera(-5, 5, 5, -5, - 20, 1000);
-    camera.position.x = 0;
-    camera.position.y = 20;
-    camera.position.z = 0;
+    camera.position.x = 30;
+    camera.position.y = 5;
+    camera.position.z = 10;
 
-    //camera.rotation.y = Math.PI / 3;
+    camera.rotation.y = Math.PI / 2;
     
     //Skapar / ritar matrisen
     possibleStartPositions = []; //Nollställer startpos innan man lägger till nya
@@ -599,6 +600,7 @@ function createTree(start_INDEX, end_INDEX, startPosition, c_rot, len, segGirth)
             if(noCollision(rootCoord, segRot)){
                 console.log("YAY, GREN")
                 createTreeSegment(rootCoord, segRot, sentence[current_index], len, currentGirth);
+                //OBS, ev null till drawVoxel!
                 drawVoxel(coord2Index(new THREE.Vector3(rootCoord.x, rootCoord.y, rootCoord.z)), true);
                }
             else{
@@ -665,7 +667,7 @@ function generateScene(M, sphereRadie) {
     init();
 
     var axiom = "ABC"
-    var iteration = 4;
+    var iteration = 7;
     var raw_sentence = Lsystem(axiom, iteration, 0);
     // tempigt
     //raw_sentence = "[A[B[AA]BB]AAA]"
