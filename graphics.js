@@ -57,8 +57,8 @@ function pointDist(a, b) {
 }
 //OBS: KAN RETURNERA NULL!!
 function coord2Index(coord) {
-    //console.log("coord2ind coord:")
-    //console.log(coord)
+    console.log("coord2ind coord:")
+    console.log(coord)
     if (coord.x > 20 - 1 || coord.x < 0){
         //console.log("X COORDINATE OUT OF BOUNDS")
         return null;
@@ -246,6 +246,7 @@ function noCollision(pos, rot){
         line_temp.translateY(segmentLength);        //Translate to get new midCoord
         line_temp.getWorldPosition(midCoord);           //Update midCoord to new coordinates
 
+        
         //enkelkollning
         if(coord2Index(midCoord) != null && isEmpty(coord2Index(midCoord))){
 
@@ -534,23 +535,24 @@ function getDepthOfSubtree(start_INDEX) {
 }
 
 function createTree(start_INDEX, end_INDEX, startPosition, c_rot, len, segGirth) {
-    // Iterator som ändras. 
-    //console.log("Len i träd")
-    //console.log(len)
+    //ERROR! FÅR IN KNAS VÄRDE!!
+    //console.log("CREATE TREE: Testar rootCoord")
+    //console.log(startPosition.y)
 
     var current_index = start_INDEX;
     let oldPosition = startPosition; //Sparar pos-koordinaten som en temp
     let dustyOldVec = tempVec;
     let branchDir = new THREE.Vector3(c_rot.x, c_rot.y, c_rot.z);
-
+    
 
     //Loop over local main branch segments
     //While we're not at the end of the local straight branch...
     while (current_index <= end_INDEX) {
         //Räknar...
-
+        
+        //CASE 1: NY GREN
         if (sentence[current_index].instruction == "[") {
-
+            console.log("CASE 1: Ny gren ([)");
             var lbi = getEndIndexOfBranch(current_index); //Last bracket of new branch!
 
             var wtf = new THREE.Vector3(rootCoord.x, rootCoord.y, rootCoord.z);
@@ -576,8 +578,10 @@ function createTree(start_INDEX, end_INDEX, startPosition, c_rot, len, segGirth)
             current_index = lbi; //Go to next index after recursive branch
 
         }
-
+        
+        //CASE 2: MÖJLIGT NYTT SEGMENT
         else if (sentence[current_index].instruction != "]") {
+            console.log("CASE 2: Inga klammrar, letar space...");
             
             let segRandRot = Math.PI * sentence[current_index].rand / 2;
             let segRot = new THREE.Vector3(branchDir.x - segRandRot, branchDir.y + segRandRot, branchDir.z);
@@ -588,6 +592,14 @@ function createTree(start_INDEX, end_INDEX, startPosition, c_rot, len, segGirth)
             console.log("********************");
             console.log("RootCoord");
             console.log(rootCoord);
+            
+            console.log("RootCoord X:");
+            console.log(rootCoord.x);
+            console.log("RootCoord Y:");
+            console.log(rootCoord.y);
+            console.log("RootCoord Z:");
+            console.log(rootCoord.z);
+            
             console.log("Segment rotation");
             console.log(segRot)
             console.log("********************");
@@ -598,32 +610,33 @@ function createTree(start_INDEX, end_INDEX, startPosition, c_rot, len, segGirth)
              
             
             if(noCollision(rootCoord, segRot)){
-                console.log("YAY, GREN")
+                console.log("CASE 2.1: Hittade väg på försök 1")
+                
                 createTreeSegment(rootCoord, segRot, sentence[current_index], len, currentGirth);
                 //OBS, ev null till drawVoxel!
                 drawVoxel(coord2Index(new THREE.Vector3(rootCoord.x, rootCoord.y, rootCoord.z)), true);
                }
             else{
-                console.log("Letar efter ny väg...")
+                console.log("CASE 2.2: Hittade ingen väg, fortsätter leta...")
                 let newPath = findPath(rootCoord, branchDir);
                 
                 //If no path --> break branch. Else --> Build in working dierction and update the general branch direction 
                 if(newPath == null){
-                    console.log("STOPP");
+                    console.log("CASE 2.2.1: ÅTERVÄNDSGRÄND, STANNAR");
                     current_index = end_INDEX;
                     
                 } 
                 //BUGG HÄR, NULL POSITION!!    
                 else {
-                    console.log("HITTADE VÄG!! ... Eller?")
+                    console.log("CASE 2.2.2: Hittade väg, men kan vara out of bound...")
                     let rootVoxelCoord = coord2Index(new THREE.Vector3(rootCoord.x, rootCoord.y, rootCoord.z));
                     
                     if(rootVoxelCoord == null){
-                        console.log("nah, out of bounds");
+                        console.log("CASE 2.2.2A: Out of bounds, STANNAR");
                         current_index = end_INDEX;
                     }
                     else{
-                        console.log("ok, var faktiskt en gren"); //MEN FÅR EN FUCKING ERROR ÄNDÅ
+                        console.log("CASE 2.2.2B: OK VÄG, KÖR PÅ");
                         createTreeSegment(rootCoord, newPath, sentence[current_index], len, currentGirth);
                         branchDir = newPath;
                         drawVoxel((rootVoxelCoord), true);
@@ -706,6 +719,9 @@ function generateScene(M, sphereRadie) {
     //createTree(0, sentence.length - 1, initialStartPosition(81, 100), new THREE.Vector3(0, 0, 0), segmentLength, currentGirth);
     
     rootCoord = initialStartPosition(startPosition, startPosition_length);
+    //ser ut som en bugg om man 
+    console.log("OBS: Ser ut som bugg här om man inte genererar scen eller råkar välja dåliga startparametrar");
+    console.log("Testa välja nya parametrar (t.ex. pos = 80)")
     createTree(0, sentence.length - 1, rootCoord, new THREE.Vector3(0, 0, 0), segmentLength, currentGirth);
     
     renderer.render(scene, camera);
